@@ -1,0 +1,50 @@
+.clearfix:after {
+     visibility: hidden;
+     display: block;
+     font-size: 0;
+     content: " ";
+     clear: both;
+     height: 0;
+     }
+.clearfix { display: inline-block; }
+/* start commented backslash hack \*/
+* html .clearfix { height: 1%; }
+.clearfix { display: block; }
+/* close commented backslash hack */
+
+#react-root {
+  width: 100%;
+  height: 100%;
+  font-family: helvetica, arial, sans-serif;
+}
+
+.wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+.config-form {
+  padding: 20px;
+}
+
+.field {
+  display: flex;
+  height: 40px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  float: left;
+  margin-right: 30px;
+}
+
+.field label {
+  margin-right: 20px;
+  line-height: 35px;
+}
+
+.field input, .field select {
+  height: 25px;
+  padding: 5px;
+  font-weight: bold;
+  font-size: 20px;
+}
