@@ -1,0 +1,57 @@
+{
+  "name": "graphiql-app",
+  "version": "0.1.0",
+  "description": "A light, Electron-based wrapper around GraphiQL. WIP",
+  "main": "main.js",
+  "scripts": {
+    "dev-server": "webpack-dev-server --config webpack/webpack-dev-server.config.js --progress --colors --port 2992 --inline",
+    "hot-dev-server": "webpack-dev-server --config webpack/webpack-hot-dev-server.config.js --hot --progress --colors --port 2992 --inline",
+    "build": "webpack --config webpack/webpack.config.production.js --progress --profile --colors",
+    "start": "electron .",
+    "start-dev": "NODE_ENV=development electron .",
+    "start-hot": "HOT=1 NODE_ENV=development electron .",
+    "package": "node package.js --name=GraphiQL",
+    "package-all": "node package.js --name=GraphiQL --all"
+  },
+  "author": "Adam Miskiewicz <adam.skevy@mac.com> (http://github.com/skevy)",
+  "license": "MIT",
+  "homepage": "https://github.com/skevy/graphiql-app",
+  "bugs": {
+    "url": "https://github.com/skevy/graphiql-app/issues"
+  },
+  "dependencies": {
+    "electron-debug": "^0.2.0",
+    "graphiql": "^0.1.0",
+    "graphql": "^0.4.2",
+    "isomorphic-fetch": "^2.1.1",
+    "lodash": "^3.10.1",
+    "object-assign": "^4.0.1",
+    "radium": "^0.13.8",
+    "react": "^0.13.3",
+    "react-modal": "^0.3.0"
+  },
+  "devDependencies": {
+    "asar": "^0.7.2",
+    "babel-core": "^5.8.22",
+    "babel-loader": "^5.3.2",
+    "babel-runtime": "^5.8.20",
+    "css-loader": "^0.16.0",
+    "del": "^1.2.1",
+    "electron-packager": "^5.0.2",
+    "electron-prebuilt": "^0.31.0",
+    "electron-rebuild": "^0.2.5",
+    "extract-text-webpack-plugin": "^0.8.2",
+    "file-loader": "^0.8.4",
+    "github-latest-release": "^0.1.1",
+    "html-loader": "^0.3.0",
+    "json-loader": "^0.5.2",
+    "minimist": "^1.2.0",
+    "raw-loader": "^0.5.1",
+    "react-hot-loader": "^1.2.9",
+    "stats-webpack-plugin": "^0.2.1",
+    "style-loader": "^0.12.3",
+    "url-loader": "^0.5.6",
+    "webpack": "^1.12.0",
+    "webpack-dev-server": "^1.10.1"
+  }
+}
