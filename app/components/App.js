@@ -90,10 +90,12 @@ export default class App extends React.Component {
             <a href="javascript:;" onClick={this.openHeaderEdit}>Edit HTTP Headers</a>
           </div>
         </div>
-        {
-          // THIS IS THE GROSSEST THING I'VE EVER DONE AND I HATE IT. FIX ASAP
-        }
-        <GraphiQL key={this.state.endpoint + JSON.stringify(this.state.headers)} fetcher={this.graphQLFetcher}  />
+        <div className="graphiql-wrapper">
+          {
+            // THIS IS THE GROSSEST THING I'VE EVER DONE AND I HATE IT. FIX ASAP
+          }
+          <GraphiQL key={this.state.endpoint + JSON.stringify(this.state.headers)} fetcher={this.graphQLFetcher}  />
+        </div>
 
         <Modal isOpen={this.state.headerEditOpen} onRequestClose={this.closeModal}>
           <HTTPHeaderEditor
