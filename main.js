@@ -3,9 +3,6 @@ var BrowserWindow = require('browser-window');
 var Menu = require('menu');
 var menu, template;
 
-if (process.env.NODE_ENV !== 'production') {
-  require('electron-debug')();
-}
 require('crash-reporter').start();
 
 var mainWindow = null;
