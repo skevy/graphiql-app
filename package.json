@@ -20,7 +20,6 @@
     "url": "https://github.com/skevy/graphiql-app/issues"
   },
   "dependencies": {
-    "electron-debug": "^0.2.0",
     "graphiql": "^0.1.1",
     "graphql": "^0.4.2",
     "isomorphic-fetch": "^2.1.1",
