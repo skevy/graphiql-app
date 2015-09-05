@@ -16,8 +16,7 @@ module.exports = function(opts) {
 
 
   var loaders = {
-    'jsx': opts.hotComponents ?
-      [ 'react-hot-loader', 'babel-loader?optional=runtime' ] : 'babel-loader?optional=runtime',
+    'jsx': 'babel-loader?optional=runtime',
     'js': {
       loader: 'babel-loader?optional=runtime',
       include: appRoot
@@ -75,13 +74,13 @@ module.exports = function(opts) {
   }
 
   var excludeFromStats = [
-    /node_modules[\\\/]react(-router)?[\\\/]/
+    // /node_modules[\\\/]react(-router)?[\\\/]/
   ]
 
 
   var plugins = [
-    new webpack.PrefetchPlugin('react'),
-    new webpack.PrefetchPlugin('react/lib/ReactComponentBrowserEnvironment')
+    // new webpack.PrefetchPlugin('react'),
+    // new webpack.PrefetchPlugin('react/lib/ReactComponentBrowserEnvironment')
   ]
 
   if (opts.prerender) {
@@ -144,9 +143,7 @@ module.exports = function(opts) {
     )
   }
 
-  var nodeModules = fs.readdirSync('node_modules').filter(function(x) {
-    return x !== '.bin' && x !== 'react' && x !== 'react-router';
-  });
+  var nodeModules = fs.readdirSync('node_modules');
 
   var electronModules = [
     'ipc',

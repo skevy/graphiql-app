@@ -38,6 +38,70 @@ body {
   flex-direction: column;
 }
 
+.tab-bar {
+  width: 100%;
+  height: 46px;
+  overflow-y: visible;
+  overflow-x: scroll;
+}
+
+.tab-bar-inner {
+  width: auto;
+  max-width: 10000px;
+  display: flex;
+  height: 45px;
+  border-bottom: solid 1px #efefef;
+  background-color: #fcfcfc;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.tab-bar li {
+  display: flex;
+  list-style-type: none;
+  width: 150px;
+  flex-basis: 150px;
+  flex-shrink: 0;
+}
+
+.tab-bar li > a {
+  width: 100%;
+  color: #999;
+  font-size: .8em;
+  background-color: #fcfcfc;
+  text-decoration: none;
+  display: block;
+  padding: 15px;
+  text-align: center;
+  border-right: solid 1px #efefef;
+}
+
+.tab-bar li:last-child > a {
+  /*border-right: none;*/
+}
+
+.tab-bar li.active {
+  height: 47px;
+}
+
+.tab-bar li.active > a {
+  color: black;
+  background-color: white;
+  border-bottom: none;
+}
+
+.tabs {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.tabs__tab {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
 #graphiql-container {
   flex: 1;
 }

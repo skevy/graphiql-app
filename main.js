@@ -64,6 +64,21 @@ app.on('ready', function() {
         }
       }]
     }, {
+      label: 'File',
+      submenu: [{
+        label: 'New Query',
+        accelerator: 'Command+N',
+        click: function() {
+          mainWindow.webContents.send('handleElectronMenuOption', 'NEW_TAB');
+        }
+      }, {
+        label: 'Close Query',
+        accelerator: 'Command+W',
+        click: function() {
+          mainWindow.webContents.send('handleElectronMenuOption', 'CLOSE_TAB');
+        }
+      }]
+    }, {
       label: 'Edit',
       submenu: [{
         label: 'Undo',
@@ -120,10 +135,6 @@ app.on('ready', function() {
         accelerator: 'Command+M',
         selector: 'performMiniaturize:'
       }, {
-        label: 'Close',
-        accelerator: 'Command+W',
-        selector: 'performClose:'
-      }, {
         type: 'separator'
       }, {
         label: 'Bring All to Front',
@@ -160,13 +171,10 @@ app.on('ready', function() {
     template = [{
       label: '&File',
       submenu: [{
-        label: '&Open',
-        accelerator: 'Ctrl+O'
-      }, {
-        label: '&Close',
-        accelerator: 'Ctrl+W',
+        label: 'New Query',
+        accelerator: 'Ctrl+N',
         click: function() {
-          mainWindow.close();
+          mainWindow.webContents.send('handleElectronMenuOption', 'NEW_TAB');
         }
       }]
     }, {
