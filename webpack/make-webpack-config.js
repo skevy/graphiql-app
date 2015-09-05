@@ -1,22 +1,22 @@
-var webpack = require('webpack')
-var path = require('path')
-var fs = require('fs')
-var ExtractTextPlugin = require('extract-text-webpack-plugin')
-var StatsPlugin = require('stats-webpack-plugin')
-var loadersByExtension = require('./loaders-by-extension')
+/* eslint func-names: 0 */
+var webpack = require('webpack');
+var path = require('path');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var StatsPlugin = require('stats-webpack-plugin');
+var loadersByExtension = require('./loaders-by-extension');
+var webpackTargetElectronRenderer = require('webpack-target-electron-renderer');
 
-var projectRoot = path.join(__dirname, '..')
-var appRoot = path.join(projectRoot, 'app')
+var projectRoot = path.join(__dirname, '..');
+var appRoot = path.join(projectRoot, 'app');
 
 module.exports = function(opts) {
-
   var entry = {
     main: opts.prerender ? path.join(appRoot, 'mainApp') : path.join(appRoot, 'mainApp')
-  }
+  };
 
 
   var loaders = {
-    'jsx': 'babel-loader?optional=runtime',
+    'jsx': opts.hotComponents ? [ 'react-hot-loader', 'babel-loader?optional=runtime' ] : 'babel-loader?optional=runtime',
     'js': {
       loader: 'babel-loader?optional=runtime',
       include: appRoot
@@ -29,40 +29,40 @@ module.exports = function(opts) {
     'wav|mp3': 'file-loader',
     'html': 'html-loader',
     'md|markdown': [ 'html-loader', 'markdown-loader' ]
-  }
+  };
 
-  var cssLoader = opts.minimize ? 'css-loader' : 'css-loader?localIdentName=[path][name]---[local]---[hash:base64:5]'
+  var cssLoader = opts.minimize ? 'css-loader' : 'css-loader?localIdentName=[path][name]---[local]---[hash:base64:5]';
 
   var stylesheetLoaders = {
     'css': cssLoader,
     'less': [ cssLoader, 'less-loader' ],
     'styl': [ cssLoader, 'stylus-loader' ],
     'scss|sass': [ cssLoader, 'sass-loader' ]
-  }
+  };
 
   var additionalLoaders = [
     // { test: /some-reg-exp$/, loader: 'any-loader' }
-  ]
+  ];
 
   var alias = {
 
-  }
+  };
 
   var aliasLoader = {
 
-  }
+  };
 
   var externals = [
 
-  ]
+  ];
 
-  var modulesDirectories = [ 'node_modules' ]
+  var modulesDirectories = [ 'node_modules' ];
 
-  var extensions = [ '', '.js', '.jsx', '.json', '.node' ]
+  var extensions = [ '', '.js', '.jsx', '.json', '.node' ];
 
   var publicPath = opts.devServer
                  ? 'http://localhost:2992/dist/'
-                 : '/dist/'
+                 : '/dist/';
 
 
   var output = {
@@ -71,29 +71,32 @@ module.exports = function(opts) {
     publicPath: publicPath,
     contentBase: projectRoot + '/public/',
     libraryTarget: 'commonjs2'
-  }
+  };
 
   var excludeFromStats = [
-    // /node_modules[\\\/]react(-router)?[\\\/]/
-  ]
+    /node_modules[\\\/]react(-router)?[\\\/]/
+  ];
 
 
   var plugins = [
-    // new webpack.PrefetchPlugin('react'),
-    // new webpack.PrefetchPlugin('react/lib/ReactComponentBrowserEnvironment')
-  ]
+    new webpack.PrefetchPlugin('react'),
+    new webpack.PrefetchPlugin('react/lib/ReactComponentBrowserEnvironment')
+  ];
 
   if (opts.prerender) {
     plugins.push(new StatsPlugin(path.join(projectRoot, 'dist', 'stats.prerender.json'), {
       chunkModules: true,
       exclude: excludeFromStats
-    }))
-    // aliasLoader['react-proxy$'] = 'react-proxy/unavailable'
-    // aliasLoader['react-proxy-loader$'] = 'react-proxy-loader/unavailable'
+    }));
+    aliasLoader['react-proxy$'] = 'react-proxy/unavailable';
+    aliasLoader['react-proxy-loader$'] = 'react-proxy-loader/unavailable';
     externals.push(
-      // /^react(\/.*)?$/
-    )
-    plugins.push(new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }))
+      /^react(\/.*)?$/,
+      /^reflux(\/.*)?$/,
+      'superagent',
+      'async'
+    );
+    plugins.push(new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }));
   } else {
     plugins.push(new StatsPlugin(path.join(projectRoot, 'dist', 'stats.json'), {
       chunkModules: true,
@@ -102,23 +105,30 @@ module.exports = function(opts) {
   }
 
   if (opts.commonsChunk) {
-    plugins.push(new webpack.optimize.CommonsChunkPlugin('commons', 'commons.js' + (opts.longTermCaching && !opts.prerender ? '?[chunkhash]' : '')))
+    plugins.push(new webpack.optimize.CommonsChunkPlugin('commons', 'commons.js' + (opts.longTermCaching && !opts.prerender ? '?[chunkhash]' : '')));
   }
+  //
+  // var asyncLoader = {
+  //   test: require('../app/routes/async').map(function(name) {
+  //     return path.join(appRoot, 'routes', name);
+  //   }),
+  //   loader: opts.prerender ? 'react-proxy-loader/unavailable' : 'react-proxy-loader'
+  // };
 
   Object.keys(stylesheetLoaders).forEach(function(ext) {
-    var stylesheetLoader = stylesheetLoaders[ext]
-    if (Array.isArray(stylesheetLoader)) stylesheetLoader = stylesheetLoader.join('!')
+    var stylesheetLoader = stylesheetLoaders[ext];
+    if (Array.isArray(stylesheetLoader)) stylesheetLoader = stylesheetLoader.join('!');
     if (opts.prerender) {
-      stylesheetLoaders[ext] = stylesheetLoader.replace(/^css-loader/, 'css-loader/locals')
+      stylesheetLoaders[ext] = stylesheetLoader.replace(/^css-loader/, 'css-loader/locals');
     } else if (opts.separateStylesheet) {
-      stylesheetLoaders[ext] = ExtractTextPlugin.extract('style-loader', stylesheetLoader)
+      stylesheetLoaders[ext] = ExtractTextPlugin.extract('style-loader', stylesheetLoader);
     } else {
-      stylesheetLoaders[ext] = 'style-loader!' + stylesheetLoader
+      stylesheetLoaders[ext] = 'style-loader!' + stylesheetLoader;
     }
-  })
+  });
 
   if (opts.separateStylesheet && !opts.prerender) {
-    plugins.push(new ExtractTextPlugin('[name].css' + (opts.longTermCaching ? '?[contenthash]' : '')))
+    plugins.push(new ExtractTextPlugin('[name].css' + (opts.longTermCaching ? '?[contenthash]' : '')));
   }
 
   if (opts.minimize && !opts.prerender) {
@@ -129,7 +139,7 @@ module.exports = function(opts) {
         }
       }),
       new webpack.optimize.DedupePlugin()
-    )
+    );
   }
 
   if (opts.minimize) {
@@ -140,27 +150,17 @@ module.exports = function(opts) {
         }
       }),
       new webpack.NoErrorsPlugin()
-    )
+    );
   }
 
-  var nodeModules = fs.readdirSync('node_modules');
+  externals.push(
+    // put your node 3rd party libraries which can't be built with webpack here (mysql, mongodb, and so on..)
+  );
 
-  var electronModules = [
-    'ipc',
-    'remote',
-    'web-frame',
-    'clipboard',
-    'crash-reporter',
-    'native-image',
-    'screen',
-    'shell'
-  ];
-
-  return {
+  var options = {
     entry: entry,
     output: output,
-    target: 'web',
-    externals: externals.concat(nodeModules).concat(electronModules),
+    externals: externals,
     module: {
       loaders: [].concat(loadersByExtension(loaders)).concat(loadersByExtension(stylesheetLoaders)).concat(additionalLoaders)
     },
@@ -170,7 +170,9 @@ module.exports = function(opts) {
       root: appRoot,
       modulesDirectories: modulesDirectories,
       extensions: extensions,
-      alias: alias
+      alias: alias,
+      fallback: path.join(__dirname, '..', 'node_modules'),
+      packageMains: ['webpack', 'browser', 'web', 'browserify', ['jam', 'main'], 'main']
     },
     plugins: plugins,
     devServer: {
@@ -179,5 +181,9 @@ module.exports = function(opts) {
         exclude: excludeFromStats
       }
     }
-  }
-}
+  };
+
+  options.target = webpackTargetElectronRenderer(options);
+
+  return options;
+};

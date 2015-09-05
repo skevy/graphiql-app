@@ -2,7 +2,7 @@
 import _ from 'lodash';
 import React from 'react';
 import fetch from 'isomorphic-fetch';
-import GraphiQL from 'graphiql/dist/index';
+import GraphiQL from 'graphiql/dist';
 import Modal from 'react-modal/lib/index';
 
 Modal.setAppElement(document.getElementById('react-root'));
