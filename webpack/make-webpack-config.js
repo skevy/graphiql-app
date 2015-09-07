@@ -171,7 +171,7 @@ module.exports = function(opts) {
       modulesDirectories: modulesDirectories,
       extensions: extensions,
       alias: alias,
-      fallback: path.join(__dirname, '..', 'node_modules'),
+      fallback: [path.join(__dirname, '..', 'node_modules'), path.join(__dirname, '..', 'node_modules', 'graphiql', 'node_modules')],
       packageMains: ['webpack', 'browser', 'web', 'browserify', ['jam', 'main'], 'main']
     },
     plugins: plugins,
