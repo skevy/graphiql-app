@@ -19,7 +19,7 @@ export default class App extends React.Component {
 
     this.state = {
       headerEditOpen: false,
-      currentTabKey: 0,
+      currentTabKey: storage.getItem('currentTab') ? parseInt(storage.getItem('currentTab')) : 0,
       tabs: storage.getItem('tabs') ? JSON.parse(storage.getItem('tabs')) : [
         {
           name: null,
@@ -140,6 +140,7 @@ export default class App extends React.Component {
 
   updateLocalStorage() {
     window.localStorage.setItem('tabs', JSON.stringify(this.state.tabs));
+    window.localStorage.setItem('currentTab', this.state.currentTabKey);
   }
 
   graphQLFetcher = (graphQLParams) => {
