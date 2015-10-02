@@ -252,7 +252,7 @@ export default class App extends React.Component {
           }
           <GraphiQL
             key={currentTabKey + currentTab.endpoint + JSON.stringify(currentTab.headers)}
-            storageKeyPrefix={`graphiql:${currentTabKey}`}
+            storage={getStorage(`graphiql:${currentTabKey}`)}
             fetcher={this.graphQLFetcher} />
         </div>
       </div>
@@ -295,4 +295,20 @@ export default class App extends React.Component {
       </div>
     );
   }
+}
+
+const _storages = {};
+
+function _makeStorage(storageKey) {
+  return {
+    setItem: (key, val) => window.localStorage.setItem(`${storageKey}${key}`, val),
+    getItem: (key) => window.localStorage.getItem(`${storageKey}${key}`)
+  };
+}
+
+function getStorage(storageKey) {
+  if (!_storages[storageKey]) {
+    _storages[storageKey] = _makeStorage(storageKey);
+  }
+  return _storages[storageKey];
 }
