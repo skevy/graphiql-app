@@ -150,6 +150,13 @@ export default class App extends React.Component {
 
     const { endpoint, method, headers } = this.getCurrentTab();
 
+    if (method == "get") {
+      return fetch(endpoint + "?query=" + encodeURIComponent(graphQLParams['query']) + "&variables=" + encodeURIComponent(graphQLParams['variables']), {
+        method: method,
+        headers: Object.assign({}, defaultHeaders, headers),
+        body: null
+      }).then(response => response.json());
+    }
     return fetch(endpoint, {
       method: method,
       headers: Object.assign({}, defaultHeaders, headers),
