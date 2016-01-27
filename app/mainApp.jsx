@@ -40,10 +40,11 @@ import 'mousetrap';
 
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 import App from './components/App';
 
-const app = React.render(<App />, document.getElementById('react-root'));
+const app = ReactDOM.render(<App />, document.getElementById('react-root'));
 
 require('ipc').on('handleElectronMenuOption', function(option) {
   app.handleElectronMenuOption(option);
