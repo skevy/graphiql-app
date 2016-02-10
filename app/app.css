@@ -107,22 +107,41 @@ body {
 }
 
 .config-form {
-  padding: 20px;
+  padding: 12px;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
 }
 
 .field {
   display: flex;
-  height: 40px;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
-  float: left;
-  margin-right: 30px;
+  margin: 0 12px;
+}
+
+.endpoint-box {
+  flex: 1;
+}
+
+.endpoint-box input {
+  width: 100%;
+}
+
+.endpoint-box label {
+  text-align: center;
+}
+
+@media (max-width: 700px) {
+  .endpoint-box {
+    width: 100%;
+    flex: initial;
+    margin-bottom: 15px;
+  }
 }
 
 .field label {
   margin-right: 20px;
-  line-height: 35px;
 }
 
 .field input, .field select {
@@ -131,3 +150,4 @@ body {
   font-weight: bold;
   font-size: 20px;
 }
+

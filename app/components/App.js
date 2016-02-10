@@ -237,7 +237,7 @@ export default class App extends React.Component {
     const tabEl = (
       <div key={currentTabKey} className="tabs__tab">
         <div className="config-form clearfix">
-          <div className="field">
+          <div className="field endpoint-box">
             <label htmlFor="endpoint">GraphQL Endpoint</label>
             <input type="text" name="endpoint"
               value={currentTab.endpoint} onChange={this.handleChange.bind(this, 'endpoint')} />
