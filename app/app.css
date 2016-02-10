@@ -41,8 +41,6 @@ body {
 .tab-bar {
   width: 100%;
   height: 46px;
-  overflow-y: visible;
-  overflow-x: scroll;
 }
 
 .tab-bar-inner {
