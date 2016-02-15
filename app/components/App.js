@@ -6,7 +6,6 @@ import GraphiQL from 'graphiql/dist';
 import Modal from 'react-modal/lib/index';
 
 Modal.setAppElement(document.getElementById('react-root'));
-Modal.injectCSS();
 
 import HTTPHeaderEditor from './HTTPHeaderEditor';
 

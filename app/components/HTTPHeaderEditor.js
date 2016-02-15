@@ -5,7 +5,7 @@ import React from 'react';
 export default class HTTPHeaderEditor extends React.Component {
   constructor(props) {
     super(props);
-    
+
     this.state = {
       headers: props.headers || [],
       addingHeader: false
@@ -86,9 +86,11 @@ export default class HTTPHeaderEditor extends React.Component {
           <a href="javascript:;" onClick={this.addHeader}>+ Add Header</a>
           <table className="pure-table pure-table-striped" style={styles.table}>
             <thead>
-              <th>Key</th>
-              <th>Value</th>
-              <th></th>
+              <tr>
+                <th>Key</th>
+                <th>Value</th>
+                <th></th>
+              </tr>
             </thead>
             <tbody>
             {this.state.headers.map((header, i) => (
