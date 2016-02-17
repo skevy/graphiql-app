@@ -150,7 +150,14 @@ export default class App extends React.Component {
     const { endpoint, method, headers } = this.getCurrentTab();
 
     if (method == "get") {
-      return fetch(endpoint + "?query=" + encodeURIComponent(graphQLParams['query']) + "&variables=" + encodeURIComponent(graphQLParams['variables']), {
+      var url = endpoint;
+      if (typeof graphQLParams['variables'] === "undefined"){
+        graphQLParams['variables'] = "{}";
+      }
+
+      url += url.indexOf('?') == -1 ? "?" : "&";
+      
+      return fetch(url + "query=" + encodeURIComponent(graphQLParams['query']) + "&variables=" + encodeURIComponent(graphQLParams['variables']), {
         method: method,
         headers: Object.assign({}, defaultHeaders, headers),
         body: null
