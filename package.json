@@ -20,16 +20,16 @@
     "url": "https://github.com/skevy/graphiql-app/issues"
   },
   "dependencies": {
-    "graphiql": "^0.5.0",
-    "graphql": "^0.4.17",
+    "graphiql": "^0.7.1",
+    "graphql": "^0.6.0",
     "isomorphic-fetch": "^2.1.1",
     "lodash": "^3.10.1",
     "mousetrap": "^1.5.3",
     "object-assign": "^4.0.1",
     "radium": "^0.14.1",
-    "react": "^0.14.6",
-    "react-dom": "^0.14.6",
-    "react-modal": "^0.6.1"
+    "react": "^15.0.2",
+    "react-dom": "^15.0.2",
+    "react-modal": "^1.2.1"
   },
   "devDependencies": {
     "asar": "^0.8.0",
