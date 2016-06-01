@@ -11,7 +11,8 @@
     "start-dev": "NODE_ENV=development electron .",
     "start-hot": "HOT=1 NODE_ENV=development electron .",
     "package": "node package.js --name=GraphiQL",
-    "package-all": "node package.js --name=GraphiQL --all"
+    "package-all": "node package.js --name=GraphiQL --all",
+    "release": "npm run package-all && node node_modules/electron-release/cli.js"
   },
   "author": "Adam Miskiewicz <adam.skevy@mac.com> (http://github.com/skevy)",
   "license": "MIT",
@@ -41,6 +42,7 @@
     "electron-packager": "^5.1.0",
     "electron-prebuilt": "^0.33.4",
     "electron-rebuild": "^1.0.0",
+    "electron-release": "^2.2.0",
     "extract-text-webpack-plugin": "^0.8.2",
     "file-loader": "^0.8.4",
     "github-latest-release": "^0.1.1",
