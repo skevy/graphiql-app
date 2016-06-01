@@ -46,6 +46,8 @@ import App from './components/App';
 
 const app = ReactDOM.render(<App />, document.getElementById('react-root'));
 
-require('ipc').on('handleElectronMenuOption', function(option) {
+const ipcRenderer = window.require('electron').ipcRenderer;
+
+ipcRenderer.on('handleElectronMenuOption', function(event, option) {
   app.handleElectronMenuOption(option);
 });
