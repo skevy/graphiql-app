@@ -13,12 +13,13 @@ var devDeps = Object.keys(require('./package.json').devDependencies);
 var appName = argv.name || argv.n || 'ElectronReact';
 var shouldUseAsar = argv.asar || argv.a || false;
 var shouldBuildAll = argv.all || false;
-
+var shouldPrune = argv.prune || true;
 
 var DEFAULT_OPTS = {
   dir: './',
   name: appName,
   asar: shouldUseAsar,
+  prune: shouldPrune,
   ignore: [
     '/test($|/)',
     '/tools($|/)',

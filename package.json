@@ -10,8 +10,8 @@
     "start": "electron .",
     "start-dev": "NODE_ENV=development electron .",
     "start-hot": "HOT=1 NODE_ENV=development electron .",
-    "package": "node package.js --name=GraphiQL --prune",
-    "package-all": "node package.js --name=GraphiQL --all --prune",
+    "package": "node package.js --name=GraphiQL",
+    "package-all": "node package.js --name=GraphiQL --all",
     "release": "node node_modules/electron-release/cli --app release/darwin-x64/GraphiQL-darwin-x64/GraphiQL.app --token `echo ${GITHUB_TOKEN}`"
   },
   "author": "Adam Miskiewicz <adam.skevy@mac.com> (http://github.com/skevy)",
