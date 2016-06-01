@@ -1,9 +1,16 @@
-var app = require('app');
-var BrowserWindow = require('browser-window');
-var Menu = require('menu');
+var electron = require('electron');
+var app = electron.app;
+var BrowserWindow = electron.BrowserWindow;
+var Menu = electron.Menu;
+var crashReporter = electron.crashReporter;
 var menu, template;
 
-require('crash-reporter').start();
+crashReporter.start({
+  productName: 'GraphiQL',
+  companyName: 'n/a',
+  submitURL: 'https://github.com/skevy/graphiql-app/issues',
+  autoSubmit: true
+});
 
 var mainWindow = null;
 
@@ -17,9 +24,9 @@ app.on('ready', function() {
   mainWindow = new BrowserWindow({ width: 1024, height: 728 });
 
   if (process.env.HOT) {
-    mainWindow.loadUrl('file://' + __dirname + '/app/hot-dev-app.html');
+    mainWindow.loadURL('file://' + __dirname + '/app/hot-dev-app.html');
   } else {
-    mainWindow.loadUrl('file://' + __dirname + '/app/app.html');
+    mainWindow.loadURL('file://' + __dirname + '/app/app.html');
   }
 
   mainWindow.on('closed', function() {
