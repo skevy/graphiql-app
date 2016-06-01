@@ -120,7 +120,7 @@ app.on('ready', function() {
         label: 'Reload',
         accelerator: 'Command+R',
         click: function() {
-          mainWindow.restart();
+          mainWindow.reload();
         }
       }, {
         label: 'Toggle Full Screen',
