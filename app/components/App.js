@@ -1,6 +1,7 @@
 /*global Mousetrap*/
 import _ from 'lodash';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import fetch from 'isomorphic-fetch';
 import GraphiQL from 'graphiql/dist';
 import Modal from 'react-modal/lib/index';
@@ -201,7 +202,7 @@ export default class App extends React.Component {
     this.setState({
       editingTab: tabKey
     }, () => {
-      React.findDOMNode(this.refs.editingTabNameInput).focus();
+      ReactDOM.findDOMNode(this.refs.editingTabNameInput).focus();
     });
   }
 
