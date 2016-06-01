@@ -59,6 +59,9 @@ export default class App extends React.Component {
       case 'PREVIOUS_TAB':
         this.gotoPreviousTab();
         break;
+      default:
+        console.error("No idea how to handle '" + option + "'");
+        break;
     }
   }
 
