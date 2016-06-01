@@ -1,6 +1,7 @@
 /*global Mousetrap*/
 import _ from 'lodash';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import fetch from 'isomorphic-fetch';
 import GraphiQL from 'graphiql/dist';
 import Modal from 'react-modal/lib/index';
@@ -57,6 +58,9 @@ export default class App extends React.Component {
         break;
       case 'PREVIOUS_TAB':
         this.gotoPreviousTab();
+        break;
+      default:
+        console.error("No idea how to handle '" + option + "'");
         break;
     }
   }
@@ -150,7 +154,14 @@ export default class App extends React.Component {
     const { endpoint, method, headers } = this.getCurrentTab();
 
     if (method == "get") {
-      return fetch(endpoint + "?query=" + encodeURIComponent(graphQLParams['query']) + "&variables=" + encodeURIComponent(graphQLParams['variables']), {
+      var url = endpoint;
+      if (typeof graphQLParams['variables'] === "undefined"){
+        graphQLParams['variables'] = "{}";
+      }
+
+      url += url.indexOf('?') == -1 ? "?" : "&";
+      
+      return fetch(url + "query=" + encodeURIComponent(graphQLParams['query']) + "&variables=" + encodeURIComponent(graphQLParams['variables']), {
         method: method,
         headers: Object.assign({}, defaultHeaders, headers),
         body: null
@@ -201,7 +212,7 @@ export default class App extends React.Component {
     this.setState({
       editingTab: tabKey
     }, () => {
-      React.findDOMNode(this.refs.editingTabNameInput).focus();
+      ReactDOM.findDOMNode(this.refs.editingTabNameInput).focus();
     });
   }
 

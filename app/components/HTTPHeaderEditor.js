@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
+import ReactDOM from 'react-dom';
 // import Radium from 'radium';
 
 export default class HTTPHeaderEditor extends React.Component {
@@ -31,8 +32,8 @@ export default class HTTPHeaderEditor extends React.Component {
       headers: [
         ...this.state.headers,
         {
-          key: React.findDOMNode(this.newKeyInput).value,
-          value: React.findDOMNode(this.newValInput).value
+          key: ReactDOM.findDOMNode(this.newKeyInput).value,
+          value: ReactDOM.findDOMNode(this.newValInput).value
         }
       ]
     }, () => {

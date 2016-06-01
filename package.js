@@ -40,6 +40,7 @@ if (version) {
 } else {
   latest('atom', 'electron', function(err, res) {
     if (err) {
+      console.error("Error while fetching latest Electron release: " + err.message + "\n");
       DEFAULT_OPTS.version = '0.28.3';
     } else {
       DEFAULT_OPTS.version = res.name.split('v')[1];
