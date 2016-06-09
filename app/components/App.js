@@ -1,5 +1,6 @@
 /*global Mousetrap*/
 import _ from 'lodash';
+import uuid from 'uuid';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import fetch from 'isomorphic-fetch';
@@ -19,7 +20,7 @@ export default class App extends React.Component {
 
     this.state = {
       headerEditOpen: false,
-      currentTabKey: storage.getItem('currentTab') ? parseInt(storage.getItem('currentTab')) : 0,
+      currentTabIndex: storage.getItem('currentTabIndex') ? parseInt(storage.getItem('currentTabIndex')) : 0,
       tabs: storage.getItem('tabs') ? JSON.parse(storage.getItem('tabs')) : [
         {
           name: null,
@@ -67,37 +68,39 @@ export default class App extends React.Component {
 
   createNewTab() {
     const currentTab = this.getCurrentTab();
-    const newTabKey = this.state.tabs.length;
+    const newTabIndex = this.state.tabs.length;
 
     this.setState({
       tabs: [...this.state.tabs, {
+        uuid: uuid.v1(),
         headers: currentTab.headers,
         endpoint: currentTab.endpoint,
         method: currentTab.method
       }],
-      currentTabKey: newTabKey
+      currentTabIndex: newTabIndex
     }, () => {
       this.updateLocalStorage();
     });
   }
 
   closeCurrentTab() {
-    const currentTabKey = this.state.currentTabKey;
-    let gotoTabKey = currentTabKey - 1;
-    if (currentTabKey === 0) {
-      gotoTabKey = 0;
+    const currentTabIndex = this.state.currentTabIndex;
+    let gotoTabIndex = currentTabIndex - 1;
+    if (currentTabIndex === 0) {
+      gotoTabIndex = 0;
     }
 
     let newTabs = [
       ...this.state.tabs
     ];
 
-    newTabs.splice(currentTabKey, 1);
+    newTabs.splice(currentTabIndex, 1);
 
     if (newTabs.length === 0) {
       newTabs = [
         {
           name: null,
+          uuid: uuid.v1(),
           headers: {},
           endpoint: '',
           method: 'post'
@@ -107,43 +110,43 @@ export default class App extends React.Component {
 
     this.setState({
       tabs: newTabs,
-      currentTabKey: gotoTabKey
+      currentTabIndex: gotoTabIndex
     }, () => {
       this.updateLocalStorage();
     });
   }
 
   gotoNextTab() {
-    let nextTab = this.state.currentTabKey + 1;
+    let nextTab = this.state.currentTabIndex + 1;
     if (nextTab >= this.state.tabs.length) {
       nextTab = 0;
     }
     this.setState({
-      currentTabKey: nextTab
+      currentTabIndex: nextTab
     }, () => {
       this.updateLocalStorage();
     });
   }
 
   gotoPreviousTab() {
-    let prevTab = this.state.currentTabKey - 1;
+    let prevTab = this.state.currentTabIndex - 1;
     if (prevTab < 0) {
       prevTab = this.state.tabs.length - 1;
     }
     this.setState({
-      currentTabKey: prevTab
+      currentTabIndex: prevTab
     }, () => {
       this.updateLocalStorage();
     });
   }
 
   getCurrentTab() {
-    return this.state.tabs[this.state.currentTabKey];
+    return this.state.tabs[this.state.currentTabIndex];
   }
 
   updateLocalStorage() {
     window.localStorage.setItem('tabs', JSON.stringify(this.state.tabs));
-    window.localStorage.setItem('currentTab', this.state.currentTabKey);
+    window.localStorage.setItem('currentTabIndex', this.state.currentTabIndex);
   }
 
   graphQLFetcher = (graphQLParams) => {
@@ -160,7 +163,7 @@ export default class App extends React.Component {
       }
 
       url += url.indexOf('?') == -1 ? "?" : "&";
-      
+
       return fetch(url + "query=" + encodeURIComponent(graphQLParams['query']) + "&variables=" + encodeURIComponent(graphQLParams['variables']), {
         method: method,
         headers: Object.assign({}, defaultHeaders, headers),
@@ -178,17 +181,17 @@ export default class App extends React.Component {
     if (typeof eOrKey === 'number') {
       this.updateFieldForTab(eOrKey, field, e.target.value);
     } else {
-      this.updateFieldForTab(this.state.currentTabKey, field, eOrKey.target.value);
+      this.updateFieldForTab(this.state.currentTabIndex, field, eOrKey.target.value);
     }
   }
 
-  updateFieldForTab(tabKey, field, value) {
+  updateFieldForTab(tabIndex, field, value) {
     const { tabs } = this.state;
 
     const newTabs = [...tabs];
 
-    newTabs[tabKey] = {
-      ...tabs[tabKey],
+    newTabs[tabIndex] = {
+      ...tabs[tabIndex],
       [field]: value
     };
 
@@ -199,18 +202,18 @@ export default class App extends React.Component {
     });
   }
 
-  handleTabClick = (tabKey) => {
-    if (tabKey !== this.state.editingTab) {
+  handleTabClick = (tabIndex) => {
+    if (tabIndex !== this.state.editingTab) {
       this.setState({
-        currentTabKey: tabKey,
+        currentTabIndex: tabIndex,
         editingTab: null
       });
     }
   }
 
-  handleTabDoubleClick = (tabKey) => {
+  handleTabDoubleClick = (tabIndex) => {
     this.setState({
-      editingTab: tabKey
+      editingTab: tabIndex
     }, () => {
       ReactDOM.findDOMNode(this.refs.editingTabNameInput).focus();
     });
@@ -237,15 +240,15 @@ export default class App extends React.Component {
   }
 
   getHeadersFromModal = (headers) => {
-    this.updateFieldForTab(this.state.currentTabKey, 'headers', headers);
+    this.updateFieldForTab(this.state.currentTabIndex, 'headers', headers);
   }
 
   render() {
     const currentTab = this.getCurrentTab();
 
-    const { currentTabKey } = this.state;
+    const { currentTabIndex } = this.state;
     const tabEl = (
-      <div key={currentTabKey} className="tabs__tab">
+      <div key={currentTabIndex} className="tabs__tab">
         <div className="config-form clearfix">
           <div className="field endpoint-box">
             <label htmlFor="endpoint">GraphQL Endpoint</label>
@@ -268,8 +271,8 @@ export default class App extends React.Component {
             // THIS IS THE GROSSEST THING I'VE EVER DONE AND I HATE IT. FIXME ASAP
           }
           <GraphiQL
-            key={currentTabKey + currentTab.endpoint + JSON.stringify(currentTab.headers)}
-            storage={getStorage(`graphiql:${currentTabKey}`)}
+            key={currentTabIndex + currentTab.endpoint + JSON.stringify(currentTab.headers)}
+            storage={getStorage(`graphiql:${currentTab.uuid}`)}
             fetcher={this.graphQLFetcher} />
         </div>
       </div>
@@ -279,21 +282,21 @@ export default class App extends React.Component {
       <div className="wrapper">
         <div className="tab-bar">
           <div className="tab-bar-inner">
-            {_.map(this.state.tabs, (tab, tabKey) => {
+            {_.map(this.state.tabs, (tab, tabIndex) => {
               return (
                 <li
-                  key={tabKey}
-                  className={tabKey === this.state.currentTabKey ? 'active' : ''}>
+                  key={tabIndex}
+                  className={tabIndex === this.state.currentTabIndex ? 'active' : ''}>
                   <a href="javascript:;"
-                    onClick={this.handleTabClick.bind(this, tabKey)}
-                    onDoubleClick={this.handleTabDoubleClick.bind(this, tabKey)}>
-                    { this.state.editingTab === tabKey ?
+                    onClick={this.handleTabClick.bind(this, tabIndex)}
+                    onDoubleClick={this.handleTabDoubleClick.bind(this, tabIndex)}>
+                    { this.state.editingTab === tabIndex ?
                       <input ref="editingTabNameInput"
                         type="text"
-                        value={tab.name}
+                        value={tab.name || ''}
                         onKeyUp={this.handleEditTabKeyUp}
-                        onChange={this.handleChange.bind(this, 'name', tabKey)} />
-                      : tab.name || `Untitled Query ${tabKey + 1}` }
+                        onChange={this.handleChange.bind(this, 'name', tabIndex)} />
+                      : tab.name || `Untitled Query ${tabIndex + 1}` }
                   </a>
                 </li>
               );
@@ -305,7 +308,7 @@ export default class App extends React.Component {
         </div>
         <Modal isOpen={this.state.headerEditOpen} onRequestClose={this.closeModal}>
           <HTTPHeaderEditor
-            headers={_.map(this.state.tabs[this.state.currentTabKey].headers, (value, key) => ({ key, value }))}
+            headers={_.map(this.state.tabs[this.state.currentTabIndex].headers, (value, key) => ({ key, value }))}
             onCreateHeaders={this.getHeadersFromModal}
             closeModal={this.closeModal} />
         </Modal>
