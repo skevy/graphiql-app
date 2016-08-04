@@ -1,5 +1,4 @@
 os:
-  - linux
   - osx
 
 language: node_js
