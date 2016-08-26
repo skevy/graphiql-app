@@ -134,6 +134,12 @@ app.on('ready', function() {
         click: function() {
           mainWindow.toggleDevTools();
         }
+      }, {
+        role: 'resetzoom'
+      }, {
+        role: 'zoomin'
+      }, {
+        role: 'zoomout'
       }]
     }, {
       label: 'Window',
