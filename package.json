@@ -1,6 +1,6 @@
 {
   "name": "graphiql-app",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "A light, Electron-based wrapper around GraphiQL. WIP",
   "main": "main.js",
   "scripts": {
