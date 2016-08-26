@@ -26,8 +26,8 @@
     "url": "http://github.com/skevy/graphiql-app.git"
   },
   "dependencies": {
-    "graphiql": "^0.7.1",
-    "graphql": "^0.6.0",
+    "graphiql": "^0.7.6",
+    "graphql": "^0.7.0",
     "isomorphic-fetch": "^2.1.1",
     "lodash": "^3.10.1",
     "mousetrap": "^1.5.3",
