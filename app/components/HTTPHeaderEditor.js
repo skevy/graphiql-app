@@ -33,7 +33,8 @@ export default class HTTPHeaderEditor extends React.Component {
         ...this.state.headers,
         {
           key: ReactDOM.findDOMNode(this.newKeyInput).value,
-          value: ReactDOM.findDOMNode(this.newValInput).value
+          value: ReactDOM.findDOMNode(this.newValInput).value,
+          editing: false
         }
       ]
     }, () => {
@@ -60,18 +61,111 @@ export default class HTTPHeaderEditor extends React.Component {
     });
   }
 
+  editRow(i) {
+    const newHeaders = [...this.state.headers];
+    const header = newHeaders[i];
+
+    header.editing = true;
+
+    this.setState({
+      headers: newHeaders
+    }, () => {
+      this.sendHeaderListUpdate();
+    });
+  }
+
+  completeEdit(i) {
+    const newHeaders = [...this.state.headers];
+    const header = newHeaders[i];
+
+    header.key = ReactDOM.findDOMNode(this[`editingRow${i}KeyInput`]).value;
+    header.value = ReactDOM.findDOMNode(this[`editingRow${i}ValueInput`]).value;
+    header.editing = false;
+
+    this.setState({
+      headers: newHeaders
+    }, () => {
+      this.sendHeaderListUpdate();
+    });
+  }
+
+  cancelEdit(i) {
+    const newHeaders = [...this.state.headers];
+    const header = newHeaders[i];
+
+    header.editing = false;
+
+    this.setState({
+      headers: newHeaders
+    }, () => {
+      this.sendHeaderListUpdate();
+    });
+  }
+
+  completedRow(header, i) {
+    return (
+      <tr key={i}>
+        <td>{header.key}</td>
+        <td>{header.value.length > 40 ? header.value.substr(0, 40) + '...' : header.value}</td>
+        <td>
+          <button onClick={() => this.editRow(i)}>Edit</button>
+          <button onClick={() => this.removeRow(i)}>&times;</button>
+        </td>
+      </tr>
+    )
+  }
+
+  editingRow(header, i) {
+    return (
+      <tr key={`editing-row-${i}`}>
+        <td>
+          <input
+            ref={(c) => (this[`editingRow${i}KeyInput`] = c)}
+            type="text"
+            placeholder="Header Key"
+            defaultValue={header.key}
+            style={{ width: '100%' }}
+          />
+        </td>
+        <td>
+          <input
+            ref={(c) => (this[`editingRow${i}ValueInput`] = c)}
+            type="text"
+            placeholder="Header Value"
+            defaultValue={header.value}
+            style={{ width: '100%' }}
+          />
+        </td>
+        <td>
+          <button onClick={() => this.completeEdit(i)}>&#x2713;</button>
+          <button onClick={() => this.cancelEdit(i)}>&times;</button>
+        </td>
+      </tr>
+    )
+  }
+
   render() {
     let addHeader = null;
 
     if (this.state.addingHeader) {
       addHeader = (
         <tr>
-          <td><input ref={(c) => {
-            this.newKeyInput = c;
-          }} type="text" placeholder="Header Key" /></td>
-          <td><input ref={(c) => {
-            this.newValInput = c;
-          }} type="text" placeholder="Header Value" /></td>
+          <td>
+            <input
+              ref={(c) => (this.newKeyInput = c)}
+              type="text"
+              placeholder="Header Key"
+              style={{ width: '100%' }}
+            />
+          </td>
+          <td>
+            <input
+              ref={(c) => (this.newValInput = c)}
+              type="text"
+              placeholder="Header Value"
+              style={{ width: '100%' }}
+            />
+          </td>
           <td>
             <button onClick={this.completeAdd}>&#x2713;</button>
             <button onClick={this.cancelAdd}>&times;</button>
@@ -95,13 +189,9 @@ export default class HTTPHeaderEditor extends React.Component {
             </thead>
             <tbody>
             {this.state.headers.map((header, i) => (
-              <tr key={i}>
-                <td>{header.key}</td>
-                <td>{header.value.length > 40 ? header.value.substr(0, 40) + '...' : header.value}</td>
-                <td>
-                  <button onClick={this.removeRow.bind(this, i)}>&times;</button>
-                </td>
-              </tr>
+              header.editing
+              ? this.editingRow(header, i)
+              : this.completedRow(header, i)
             ))}
             {addHeader}
             </tbody>
