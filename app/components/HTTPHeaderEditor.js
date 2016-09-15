@@ -118,12 +118,24 @@ export default class HTTPHeaderEditor extends React.Component {
   editingRow(header, i) {
     return (
       <tr key={`editing-row-${i}`}>
-        <td><input ref={(c) => {
-          this[`editingRow${i}KeyInput`] = c;
-        }} type="text" placeholder="Header Key" defaultValue={header.key} /></td>
-        <td><input ref={(c) => {
-          this[`editingRow${i}ValueInput`] = c;
-        }} type="text" placeholder="Header Value" defaultValue={header.value} /></td>
+        <td>
+          <input
+            ref={(c) => (this[`editingRow${i}KeyInput`] = c)}
+            type="text"
+            placeholder="Header Key"
+            defaultValue={header.key}
+            style={{ width: '100%' }}
+          />
+        </td>
+        <td>
+          <input
+            ref={(c) => (this[`editingRow${i}ValueInput`] = c)}
+            type="text"
+            placeholder="Header Value"
+            defaultValue={header.value}
+            style={{ width: '100%' }}
+          />
+        </td>
         <td>
           <button onClick={() => this.completeEdit(i)}>&#x2713;</button>
           <button onClick={() => this.cancelEdit(i)}>&times;</button>
@@ -138,12 +150,22 @@ export default class HTTPHeaderEditor extends React.Component {
     if (this.state.addingHeader) {
       addHeader = (
         <tr>
-          <td><input ref={(c) => {
-            this.newKeyInput = c;
-          }} type="text" placeholder="Header Key" /></td>
-          <td><input ref={(c) => {
-            this.newValInput = c;
-          }} type="text" placeholder="Header Value" /></td>
+          <td>
+            <input
+              ref={(c) => (this.newKeyInput = c)}
+              type="text"
+              placeholder="Header Key"
+              style={{ width: '100%' }}
+            />
+          </td>
+          <td>
+            <input
+              ref={(c) => (this.newValInput = c)}
+              type="text"
+              placeholder="Header Value"
+              style={{ width: '100%' }}
+            />
+          </td>
           <td>
             <button onClick={this.completeAdd}>&#x2713;</button>
             <button onClick={this.cancelAdd}>&times;</button>
