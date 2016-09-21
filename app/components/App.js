@@ -6,6 +6,8 @@ import ReactDOM from 'react-dom';
 import fetch from 'isomorphic-fetch';
 import GraphiQL from 'graphiql/dist';
 import Modal from 'react-modal/lib/index';
+import {introspectionQuery} from 'graphql/utilities';
+import fs from 'fs';
 
 Modal.setAppElement(document.getElementById('react-root'));
 
@@ -233,6 +235,25 @@ export default class App extends React.Component {
     });
   }
 
+  handleSaveSchema = () => {
+    return this.graphQLFetcher({
+      query: introspectionQuery
+    }).then((schema) => {
+      const dialog = window.require('electron').remote.require('electron').dialog;
+      return new Promise((resolve) => {
+        dialog.showSaveDialog({
+          title: 'Save schema',
+          defaultPath: 'schema.json'
+        }, (filename) => {
+          resolve({schema, filename});
+        })
+      });
+    }).then(({schema, filename}) => {
+      if (!filename) return;
+      fs.writeFileSync(filename, JSON.stringify(schema, null, 2), 'utf8');
+    });
+  }
+
   closeModal = () => {
     this.setState({
       headerEditOpen: false
@@ -264,6 +285,9 @@ export default class App extends React.Component {
           </div>
           <div className="field headers">
             <a href="javascript:;" onClick={this.openHeaderEdit}>Edit HTTP Headers</a>
+          </div>
+          <div className="field headers">
+            <a href="javascript:;" onClick={this.handleSaveSchema}>Save Schema</a>
           </div>
         </div>
         <div className="graphiql-wrapper">
