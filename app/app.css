@@ -64,8 +64,6 @@ body {
 .tab-bar li {
   display: flex;
   list-style-type: none;
-  width: 150px;
-  flex-basis: 150px;
   flex-shrink: 0;
 }
 
