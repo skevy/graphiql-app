@@ -166,12 +166,14 @@ export default class App extends React.Component {
 
       return fetch(url + "query=" + encodeURIComponent(graphQLParams['query']) + "&variables=" + encodeURIComponent(graphQLParams['variables']), {
         method: method,
+        credentials: 'include',
         headers: Object.assign({}, defaultHeaders, headers),
         body: null
       }).then(response => response.json());
     }
     return fetch(endpoint, {
       method: method,
+      credentials: 'include',
       headers: Object.assign({}, defaultHeaders, headers),
       body: JSON.stringify(graphQLParams)
     }).then(response => response.json());
