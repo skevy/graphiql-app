@@ -1,0 +1,82 @@
+.HeaderEditor {
+  position: absolute;
+  right: 0;
+  left: 0;
+  border-bottom: 1px solid $border-color;
+  background-color: #fafafa;
+}
+
+.HeaderEditorBody {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 38px;
+  padding: 11px 7px 11px 13px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+
+  .NoHeaders {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .NoHeaders__Message {
+      display: inline-block;
+      opacity: 0.4;
+    }
+  }
+}
+
+.HeaderEditorFooter {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 38px;
+  background-color: #f0f0f0;
+  border-top: 1px solid $border-color;
+  padding: 6px 13px;
+}
+
+.HeaderItem {
+  display: flex;
+  margin-bottom: 10px;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
+
+.HeaderItem__Key, .HeaderItem__Value {
+  display: flex;
+  width: calc(50% - 50px);
+}
+
+.HeaderItem__Element {
+  padding: 0 5px;
+
+  &:first-of-type {
+    padding-left: 0;
+  }
+
+  &:last-of-type {
+    padding-right: 0;
+  }
+}
+
+.HeaderItem__RemoveButton {
+  display: flex;
+  width: 100px;
+
+  button {
+    width: 100%;
+    background-color: #fff;
+    border-radius: 5px;
+  }
+}

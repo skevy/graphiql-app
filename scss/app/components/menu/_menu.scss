@@ -1,0 +1,48 @@
+.Menu {
+  display: flex;
+  flex-direction: row;
+}
+
+.Menu--horizontal {
+  display: flex;
+  flex-direction: row;
+}
+
+.Menu--right {
+  justify-content: flex-end;
+}
+
+.MenuItem {
+  flex: none;
+  margin-right: 10px;
+  position: relative;
+  transition: background-color .18s ease;
+
+  &:last-of-type {
+    margin-right: 0;
+  }
+
+  button {
+    margin: 0;
+    outline: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .Icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+  }
+
+  .Label {
+    display: flex;
+  }
+
+  .Select {
+    height: 100%;
+    max-width: 200px;
+  }
+}
