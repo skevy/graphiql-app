@@ -15,7 +15,13 @@
 
 ### MacOS
 
-Unpack the latest app from the [releases][0] tab
+If you have [Homebrew](http://brew.sh/) installed on OSX:
+
+```
+brew cask install graphiql
+```
+
+Alternately, download the binary from the [Releases][0] tab.
 
 ### Window / Linux
 
@@ -44,4 +50,4 @@ Project variables for dynamic headers
 Manage projects
 ![Manage projects](assets/screenshot-4.png)
 
-[0]: https://github.com/redound/graphiql-app/releases
+[0]: https://github.com/skevy/graphiql-app/releases
