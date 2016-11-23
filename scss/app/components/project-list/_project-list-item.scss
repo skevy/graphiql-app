@@ -1,0 +1,46 @@
+.ProjectListItem {
+
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.ProjectListItem__Icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #222;
+  padding: 10px;
+  border-radius: 5px;
+  width: 84px;
+  height: 84px;
+  font-size: 40px;
+  font-weight: 200;
+  text-align: center;
+  color: #ffffff;
+}
+
+.ProjectListItem__Body {
+  width: 100%;
+  padding-left: 99px;
+  height: 114px;
+  position: relative;
+}
+
+.ProjectListItem__Title {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.ProjectListItem__Description {
+  font-weight: 200;
+  font-size: 12px;
+}
+
+.ProjectListItem__Meta {
+  font-weight: 200;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.4);
+}

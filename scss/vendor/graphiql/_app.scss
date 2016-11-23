@@ -1,0 +1,563 @@
+.graphiql-container {
+  color: #141823;
+  display:         flex;
+  display: -webkit-flex;
+  flex-direction: row;
+  -webkit-flex-direction: row;
+  font-family:
+          system,
+          -apple-system,
+          'San Francisco',
+          '.SFNSDisplay-Regular',
+          'Segoe UI',
+          Segoe,
+          'Segoe WP',
+          'Helvetica Neue',
+          helvetica,
+          'Lucida Grande',
+          arial,
+          sans-serif;
+  font-size: 14px;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  width: 100%;
+}
+
+.graphiql-container .editorWrap {
+  display: -webkit-flex;
+  display:         flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  -webkit-flex: 1;
+  flex: 1;
+}
+
+.graphiql-container .title {
+  margin-right: 12px;
+  font-size: 18px;
+}
+
+.graphiql-container .title em {
+  font-family: georgia;
+  font-size: 19px;
+}
+
+.graphiql-container .topBarWrap {
+  display: -webkit-flex;
+  display:         flex;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+
+.graphiql-container .topBar {
+  -webkit-align-items: center;
+  align-items: center;
+  background: #f0f0f0;
+  border-bottom: 1px solid $border-color;
+  cursor: default;
+  display: -webkit-flex;
+  display:         flex;
+  height: 48px;
+  padding: 7px 13px;
+  -webkit-flex: 1;
+  flex: 1;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.graphiql-container .toolbar {
+  //overflow-x: auto;
+}
+
+.graphiql-container .docExplorerShow {
+  background: #f0f0f0;
+  border-bottom: 1px solid $border-color;
+  border-left: 1px solid $border-color;
+  border-right: none;
+  border-top: none;
+  color: #222222;
+  cursor: pointer;
+  font-size: 14px;
+  outline: 0;
+  margin: 0;
+  padding: 2px 20px 0 18px;
+}
+
+.graphiql-container .docExplorerShow:before {
+  border-left: 2px solid #222222;
+  border-top: 2px solid #222222;
+  content: '';
+  display: inline-block;
+  height: 9px;
+  margin: 0 3px -1px 0;
+  position: relative;
+  -webkit-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  width: 9px;
+}
+
+.graphiql-container .editorBar {
+  display: -webkit-flex;
+  display:         flex;
+  -webkit-flex: 1;
+  flex: 1;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+
+.graphiql-container .queryWrap {
+  display: -webkit-flex;
+  display:         flex;
+  -webkit-flex: 1;
+  flex: 1;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+}
+
+.graphiql-container .resultWrap {
+  border-left: solid 1px $border-color;
+  display: -webkit-flex;
+  display:         flex;
+  position: relative;
+  -webkit-flex: 1;
+  flex: 1;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+}
+
+.graphiql-container .docExplorerWrap {
+  background: #f0f0f0;
+  border-left: 1px solid $border-color;
+  position: relative;
+  z-index: 3;
+}
+
+.graphiql-container .docExplorerResizer {
+  cursor: col-resize;
+  height: 100%;
+  left: -5px;
+  position: absolute;
+  top: 0;
+  width: 10px;
+  z-index: 10;
+}
+
+.graphiql-container .docExplorerHide {
+  cursor: pointer;
+  font-size: 18px;
+  margin: -7px -8px -6px 0;
+  padding: 18px 16px 15px 12px;
+}
+
+.graphiql-container .query-editor {
+  -webkit-flex: 1;
+  flex: 1;
+  position: relative;
+}
+
+.graphiql-container .variable-editor {
+  display: -webkit-flex;
+  display:         flex;
+  height: 29px;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  position: relative;
+}
+
+.graphiql-container .variable-editor-title {
+  background: #f0f0f0;
+  border-bottom: 1px solid $border-color;
+  border-top: 1px solid $border-color;
+  color: #777;
+  font-variant: small-caps;
+  font-weight: bold;
+  letter-spacing: 1px;
+  line-height: 14px;
+  padding: 6px 0 8px 43px;
+  text-transform: lowercase;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.graphiql-container .codemirrorWrap {
+  -webkit-flex: 1;
+  flex: 1;
+  position: relative;
+}
+
+.graphiql-container .result-window {
+  -webkit-flex: 1;
+  flex: 1;
+  position: relative;
+}
+
+.graphiql-container .footer {
+  background: #fafafa;
+  border-left: 1px solid $border-color;
+  border-top: 1px solid $border-color;
+  margin-left: 12px;
+  position: relative;
+}
+
+.graphiql-container .footer:before {
+  background: #f0f0f0;
+  bottom: 0;
+  content: " ";
+  left: -13px;
+  position: absolute;
+  top: -1px;
+  width: 12px;
+}
+
+.graphiql-container .result-window .CodeMirror {
+  background: #fafafa;
+}
+
+.graphiql-container .result-window .CodeMirror-gutters {
+  background-color: #f0f0f0;
+  border-color: $border-color;
+  cursor: col-resize;
+}
+
+.graphiql-container .result-window .CodeMirror-foldgutter,
+.graphiql-container .result-window .CodeMirror-foldgutter-open:after,
+.graphiql-container .result-window .CodeMirror-foldgutter-folded:after {
+  padding-left: 3px;
+}
+
+.graphiql-container .toolbar-button {
+  color: #444;
+  cursor: pointer;
+  display: inline-block;
+  margin: 0 5px 0;
+  padding: 3px 8px;
+  text-decoration: none;
+  background-color: #f7f7f7;
+  border: 1px solid #b3b3b3;
+  border-radius: 5px;
+  font-size: 12px;
+
+  &:hover {
+    background-color: #f4f5f5;
+  }
+
+  &:active {
+    background-color: #dddfdf;
+  }
+
+  &.active {
+    background-color: #6f6f6f;
+    color: #ffffff;
+    border-color: #6b6b6b;
+  }
+}
+
+.graphiql-container .toolbar-button:active {
+  background: #ffffff;
+  border-color: #cacaca #c9c9c9 #b0b0b0;
+}
+
+.graphiql-container .toolbar-button.error {
+  background: -webkit-linear-gradient(#fdf3f3, #e6d6d7);
+  background:         linear-gradient(#fdf3f3, #e6d6d7);
+  color: #b00;
+}
+
+.graphiql-container .execute-button-wrap {
+  position: relative;
+  margin-right: 8px;
+  height: 34px;
+}
+
+.graphiql-container .execute-button {
+  background: #f7f7f7;
+  border: 1px solid rgba(0,0,0,0.25);
+  border-radius: 17px;
+  cursor: pointer;
+  fill: #444;
+  height: 34px;
+  margin: 0;
+  padding: 0;
+  width: 34px;
+
+  &:hover {
+    background-color: #f4f5f5;
+  }
+
+  &:active {
+    background-color: #dddfdf;
+  }
+
+  &.active {
+    background-color: #6f6f6f;
+    color: #ffffff;
+    border-color: #6b6b6b;
+  }
+}
+
+.graphiql-container .execute-button svg {
+  pointer-events: none;
+}
+
+.graphiql-container .execute-options {
+  background: #fff;
+  box-shadow:
+          0 0 0 1px rgba(0,0,0,0.1),
+          0 2px 4px rgba(0,0,0,0.25);
+  left: -1px;
+  margin: 0;
+  padding: 8px 0;
+  position: absolute;
+  top: 37px;
+  z-index: 100;
+}
+
+.graphiql-container .execute-options li {
+  padding: 2px 30px 4px 10px;
+  list-style: none;
+  min-width: 100px;
+  cursor: pointer;
+}
+
+.graphiql-container .execute-options li.selected {
+  background: #e10098;
+  color: white;
+}
+
+.graphiql-container .CodeMirror-scroll {
+  -webkit-overflow-scrolling: touch;
+}
+
+.graphiql-container .CodeMirror {
+  color: #141823;
+  font-family:
+          'Consolas',
+          'Inconsolata',
+          'Droid Sans Mono',
+          'Monaco',
+          monospace;
+  font-size: 13px;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+.graphiql-container .CodeMirror-lines {
+  padding: 20px 0;
+}
+
+.CodeMirror-hint-information .content {
+  -webkit-box-orient: vertical;
+  box-orient: vertical;
+  color: #141823;
+  display: -webkit-box;
+  font-family: system, -apple-system, 'San Francisco', '.SFNSDisplay-Regular', 'Segoe UI', Segoe, 'Segoe WP', 'Helvetica Neue', helvetica, 'Lucida Grande', arial, sans-serif;
+  font-size: 13px;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  line-height: 16px;
+  max-height: 48px;
+  overflow: hidden;
+  text-overflow: -o-ellipsis-lastline;
+}
+
+.CodeMirror-hint-information .content p:first-child {
+  margin-top: 0;
+}
+
+.CodeMirror-hint-information .content p:last-child {
+  margin-bottom: 0;
+}
+
+.CodeMirror-hint-information .infoType {
+  color: #30a;
+  cursor: pointer;
+  display: inline;
+  margin-right: 0.5em;
+}
+
+.autoInsertedLeaf.cm-property {
+  -webkit-animation-duration: 6s;
+  -moz-animation-duration: 6s;
+  animation-duration: 6s;
+  -webkit-animation-name: insertionFade;
+  -moz-animation-name: insertionFade;
+  animation-name: insertionFade;
+  border-bottom: 2px solid rgba(255, 255, 255, 0);
+  border-radius: 2px;
+  margin: -2px -4px -1px;
+  padding: 2px 4px 1px;
+}
+
+@-moz-keyframes insertionFade {
+  from, to {
+    background: rgba(255, 255, 255, 0);
+    border-color: rgba(255, 255, 255, 0);
+  }
+
+  15%, 85% {
+    background: #fbffc9;
+    border-color: #f0f3c0;
+  }
+}
+
+@-webkit-keyframes insertionFade {
+  from, to {
+    background: rgba(255, 255, 255, 0);
+    border-color: rgba(255, 255, 255, 0);
+  }
+
+  15%, 85% {
+    background: #fbffc9;
+    border-color: #f0f3c0;
+  }
+}
+
+@keyframes insertionFade {
+  from, to {
+    background: rgba(255, 255, 255, 0);
+    border-color: rgba(255, 255, 255, 0);
+  }
+
+  15%, 85% {
+    background: #fbffc9;
+    border-color: #f0f3c0;
+  }
+}
+
+div.CodeMirror-lint-tooltip {
+  background-color: white;
+  border: 0;
+  border-radius: 2px;
+  color: #141823;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+  font-family:
+          system,
+          -apple-system,
+          'San Francisco',
+          '.SFNSDisplay-Regular',
+          'Segoe UI',
+          Segoe,
+          'Segoe WP',
+          'Helvetica Neue',
+          helvetica,
+          'Lucida Grande',
+          arial,
+          sans-serif;
+  font-size: 13px;
+  line-height: 16px;
+  opacity: 0;
+  padding: 6px 10px;
+  -webkit-transition: opacity 0.15s;
+  -moz-transition: opacity 0.15s;
+  -ms-transition: opacity 0.15s;
+  -o-transition: opacity 0.15s;
+  transition: opacity 0.15s;
+}
+
+div.CodeMirror-lint-message-error, div.CodeMirror-lint-message-warning {
+  padding-left: 23px;
+}
+
+/* COLORS */
+
+.graphiql-container .CodeMirror-foldmarker {
+  border-radius: 4px;
+  background: #08f;
+  background: -webkit-linear-gradient(#43A8FF, #0F83E8);
+  background:         linear-gradient(#43A8FF, #0F83E8);
+  box-shadow:
+          0 1px 1px rgba(0, 0, 0, 0.2),
+          inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+  color: white;
+  font-family: arial;
+  font-size: 12px;
+  line-height: 0;
+  margin: 0 3px;
+  padding: 0px 4px 1px;
+  text-shadow: 0 -1px rgba(0, 0, 0, 0.1);
+}
+
+.graphiql-container div.CodeMirror span.CodeMirror-matchingbracket {
+  color: #555;
+  text-decoration: underline;
+}
+
+.graphiql-container div.CodeMirror span.CodeMirror-nonmatchingbracket {
+  color: #f00;
+}
+
+/* Comment */
+.cm-comment {
+  color: #999;
+}
+
+/* Punctuation */
+.cm-punctuation {
+  color: #555;
+}
+
+/* Keyword */
+.cm-keyword {
+  color: #B11A04;
+}
+
+/* OperationName, FragmentName */
+.cm-def {
+  color: #D2054E;
+}
+
+/* FieldName */
+.cm-property {
+  color: #1F61A0;
+}
+
+/* FieldAlias */
+.cm-qualifier {
+  color: #1C92A9;
+}
+
+/* ArgumentName and ObjectFieldName */
+.cm-attribute {
+  color: #8B2BB9;
+}
+
+/* Number */
+.cm-number {
+  color: #2882F9;
+}
+
+/* String */
+.cm-string {
+  color: #D64292;
+}
+
+/* Boolean */
+.cm-builtin {
+  color: #D47509;
+}
+
+/* EnumValue */
+.cm-string-2 {
+  color: #0B7FC7;
+}
+
+/* Variable */
+.cm-variable {
+  color: #397D13;
+}
+
+/* Directive */
+.cm-meta {
+  color: #B33086;
+}
+
+/* Type */
+.cm-atom {
+  color: #CA9800;
+}

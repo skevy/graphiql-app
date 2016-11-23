@@ -1,0 +1,86 @@
+.EndpointsEditor {
+  position: relative;
+  padding-bottom: 38px;
+  border: 1px solid $border-color;
+  border-radius: 5px;
+  background-color: #fafafa;
+}
+
+.EndpointsEditorBody {
+  padding: 11px 7px 11px 13px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  position: relative;
+  min-height: 43px;
+
+  .NoEndpoints {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .NoEndpoints__Message {
+      display: inline-block;
+      opacity: 0.4;
+    }
+  }
+}
+
+.EndpointsEditorFooter {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 38px;
+  background-color: #f0f0f0;
+  border-top: 1px solid $border-color;
+  padding: 6px 13px;
+}
+
+.EndpointsItem {
+  display: flex;
+  margin-bottom: 10px;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
+
+.EndpointsItem__Title, .EndpointsItem__Url {
+  display: flex;
+  width: calc(50% - 50px);
+}
+
+.EndpointsItem__Default {
+  .checkbox {
+    margin-top: 3px;
+    margin-bottom: 3px;
+  }
+}
+
+.EndpointsItem__Element {
+  padding: 0 5px;
+
+  &:first-of-type {
+    padding-left: 0;
+  }
+
+  &:last-of-type {
+    padding-right: 0;
+  }
+}
+
+.EndpointsItem__RemoveButton {
+  display: flex;
+  width: 100px;
+
+  button {
+    width: 100%;
+    background-color: #fff;
+    border-radius: 5px;
+  }
+}

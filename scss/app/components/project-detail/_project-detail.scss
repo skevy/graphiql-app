@@ -1,0 +1,27 @@
+.ProjectDetail {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.ProjectDetailContent {
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
+.ProjectDetail__Drawer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  border-right: 1px solid $border-color;
+}
+
+.ProjectDetail__GraphiQL {
+
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
