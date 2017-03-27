@@ -74,7 +74,7 @@ app.on('ready', function() {
       label: 'File',
       submenu: [{
         label: 'New Query',
-        accelerator: 'Command+N',
+        accelerator: 'Command+T',
         click: function() {
           mainWindow.webContents.send('handleElectronMenuOption', 'NEW_TAB');
         }
