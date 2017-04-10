@@ -251,23 +251,25 @@ export default class App extends React.Component {
     const { currentTabIndex } = this.state;
     const tabEl = (
       <div key={currentTabIndex} className="tabs__tab">
-        <div className="config-form clearfix">
-          <div className="field endpoint-box">
-            <label htmlFor="endpoint">GraphQL Endpoint</label>
-            <input type="text" name="endpoint"
-              value={currentTab.endpoint} onChange={this.handleChange.bind(this, 'endpoint')} />
+        <form className="pure-form">
+          <div className="fieldset">
+            <div className="pure-control-group">
+              <label htmlFor="endpoint">GraphQL Endpoint</label>
+              <input type="text" className="pure-input-1-2" name="endpoint" value={currentTab.endpoint} onChange={this.handleChange.bind(this, 'endpoint')} placeholder="GraphQL Endpoint" />
+
+              <a href="javascript:;" className="pure-button pure-button-primary edit-headers-button" onClick={this.openHeaderEdit}>Edit HTTP Headers</a>
+
+              <div className="pure-control-group" style={{float: 'right'}}>
+                <label htmlFor="method">Method</label>
+
+                <select name="method" value={currentTab.method} onChange={this.handleChange.bind(this, 'method')}>
+                  <option value="get">GET</option>
+                  <option value="post">POST</option>
+                </select>
+              </div>
+            </div>
           </div>
-          <div className="field">
-            <label htmlFor="method">Method</label>
-            <select name="method" value={currentTab.method} onChange={this.handleChange.bind(this, 'method')}>
-              <option value="get">GET</option>
-              <option value="post">POST</option>
-            </select>
-          </div>
-          <div className="field headers">
-            <a href="javascript:;" onClick={this.openHeaderEdit}>Edit HTTP Headers</a>
-          </div>
-        </div>
+        </form>
         <div className="graphiql-wrapper">
           {
             // THIS IS THE GROSSEST THING I'VE EVER DONE AND I HATE IT. FIXME ASAP
