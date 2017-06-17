@@ -164,7 +164,7 @@ export default class App extends React.Component {
 
       url += url.indexOf('?') == -1 ? "?" : "&";
 
-      return fetch(url + "query=" + encodeURIComponent(graphQLParams['query']) + "&variables=" + encodeURIComponent(graphQLParams['variables']), {
+      return fetch(url + "query=" + encodeURIComponent(graphQLParams['query']) + "&variables=" + encodeURIComponent(JSON.stringify(graphQLParams['variables'])), {
         method: method,
         credentials: 'include',
         headers: Object.assign({}, defaultHeaders, headers),
