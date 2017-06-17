@@ -1,5 +1,6 @@
 {
   "name": "graphiql-app",
+  "productName": "GraphiQL",
   "version": "0.6.0",
   "description": "A light, Electron-based wrapper around GraphiQL. WIP",
   "main": "main.js",
