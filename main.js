@@ -23,6 +23,11 @@ app.on('ready', function() {
 
   mainWindow = new BrowserWindow({ width: 1024, height: 728 });
 
+  electron.session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
+    details.requestHeaders['Origin'] = 'electron://graphiql-app';
+    callback({ cancel: false, requestHeaders: details.requestHeaders });
+  });
+
   if (process.env.HOT) {
     mainWindow.loadURL('file://' + __dirname + '/app/hot-dev-app.html');
   } else {
