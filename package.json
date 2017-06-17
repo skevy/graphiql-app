@@ -13,6 +13,7 @@
     "package": "build --dir",
     "dist-clean": "rm -rf ./dist ./release",
     "dist": "build -mwl",
+    "release": "yarn dist-clean && yarn build && build -mwl",
     "test": "./node_modules/mocha/bin/mocha"
   },
   "author": "Adam Miskiewicz <adam.skevy@mac.com> (http://github.com/skevy)",
