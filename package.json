@@ -1,6 +1,6 @@
 {
   "name": "graphiql-app",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "A light, Electron-based wrapper around GraphiQL. WIP",
   "main": "main.js",
   "scripts": {
@@ -10,9 +10,9 @@
     "start": "electron .",
     "start-dev": "NODE_ENV=development electron .",
     "start-hot": "HOT=1 NODE_ENV=development electron .",
-    "package": "node package.js --name=GraphiQL",
-    "package-all": "node package.js --name=GraphiQL --all",
-    "release": "node node_modules/electron-release/cli --app release/darwin-x64/GraphiQL-darwin-x64/GraphiQL.app --token `echo ${GITHUB_TOKEN}`",
+    "package": "build --dir",
+    "dist-clean": "rm -rf ./dist ./release",
+    "dist": "build -mwl",
     "test": "./node_modules/mocha/bin/mocha"
   },
   "author": "Adam Miskiewicz <adam.skevy@mac.com> (http://github.com/skevy)",
@@ -54,6 +54,7 @@
     "chai-as-promised": "^5.3.0",
     "css-loader": "^0.19.0",
     "del": "^2.0.2",
+    "electron-builder": "^19.4.2",
     "electron-packager": "^8.7.1",
     "electron-prebuilt": "^1.2.0",
     "electron-rebuild": "^1.5.11",
@@ -77,5 +78,46 @@
     "webpack": "^1.12.2",
     "webpack-dev-server": "^1.12.0",
     "webpack-target-electron-renderer": "^0.1.0"
+  },
+  "build": {
+    "directories": {
+      "output": "release"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "skevy",
+        "repo": "graphiql-app"
+      }
+    ],
+    "asar": true,
+    "appId": "com.sk3vy.graphiql-app",
+    "dmg": {
+      "contents": [
+        {
+          "x": 410,
+          "y": 168,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 104,
+          "y": 168,
+          "type": "file"
+        }
+      ]
+    },
+    "mac": {
+      "category": "public.app-category.developer-tools"
+    },
+    "linux": {
+      "category": "Development",
+      "target": [
+        "AppImage"
+      ]
+    },
+    "nsis": {
+      "perMachine": true
+    }
   }
 }
