@@ -35,3 +35,5 @@ node_modules
 # App packaged
 release
 dist
+
+.envrc
