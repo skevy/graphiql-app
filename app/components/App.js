@@ -326,7 +326,8 @@ const _storages = {};
 function _makeStorage(storageKey) {
   return {
     setItem: (key, val) => window.localStorage.setItem(`${storageKey}${key}`, val),
-    getItem: (key) => window.localStorage.getItem(`${storageKey}${key}`)
+    getItem: (key) => window.localStorage.getItem(`${storageKey}${key}`),
+    removeItem: (key) => window.localStorage.removeItem(`${storageKey}${key}`)
   };
 }
 
