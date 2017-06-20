@@ -16,9 +16,9 @@ module.exports = function(opts) {
 
 
   var loaders = {
-    'jsx': opts.hotComponents ? [ 'react-hot-loader', 'babel-loader?optional=runtime' ] : 'babel-loader?optional=runtime',
+    'jsx': opts.hotComponents ? [ 'react-hot-loader', 'babel-loader' ] : 'babel-loader',
     'js': {
-      loader: 'babel-loader?optional=runtime',
+      loader: 'babel-loader',
       include: appRoot
     },
     'json': 'json-loader',
@@ -41,7 +41,7 @@ module.exports = function(opts) {
   };
 
   var additionalLoaders = [
-    // { test: /some-reg-exp$/, loader: 'any-loader' }
+    { test: /\.js.flow$/, loader: 'ignore-loader' }
   ];
 
   var alias = {
@@ -80,7 +80,7 @@ module.exports = function(opts) {
 
   var plugins = [
     new webpack.PrefetchPlugin('react'),
-    new webpack.PrefetchPlugin('react/lib/ReactComponentBrowserEnvironment')
+    new webpack.PrefetchPlugin('react-dom/lib/ReactComponentBrowserEnvironment')
   ];
 
   if (opts.prerender) {
@@ -162,7 +162,7 @@ module.exports = function(opts) {
     output: output,
     externals: externals,
     module: {
-      loaders: [].concat(loadersByExtension(loaders)).concat(loadersByExtension(stylesheetLoaders)).concat(additionalLoaders)
+      loaders: [].concat(loadersByExtension(loaders)).concat(loadersByExtension(stylesheetLoaders)).concat(additionalLoaders),
     },
     devtool: opts.devtool,
     debug: opts.debug,

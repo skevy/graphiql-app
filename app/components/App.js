@@ -166,14 +166,16 @@ export default class App extends React.Component {
 
       url += url.indexOf('?') == -1 ? "?" : "&";
 
-      return fetch(url + "query=" + encodeURIComponent(graphQLParams['query']) + "&variables=" + encodeURIComponent(graphQLParams['variables']), {
+      return fetch(url + "query=" + encodeURIComponent(graphQLParams['query']) + "&variables=" + encodeURIComponent(JSON.stringify(graphQLParams['variables'])), {
         method: method,
+        credentials: 'include',
         headers: Object.assign({}, defaultHeaders, headers),
         body: null
       }).then(response => response.json());
     }
     return fetch(endpoint, {
       method: method,
+      credentials: 'include',
       headers: Object.assign({}, defaultHeaders, headers),
       body: JSON.stringify(graphQLParams)
     }).then(response => response.json());
@@ -270,26 +272,25 @@ export default class App extends React.Component {
     const { currentTabIndex } = this.state;
     const tabEl = (
       <div key={currentTabIndex} className="tabs__tab">
-        <div className="config-form clearfix">
-          <div className="field endpoint-box">
-            <label htmlFor="endpoint">GraphQL Endpoint</label>
-            <input type="text" name="endpoint"
-              value={currentTab.endpoint} onChange={this.handleChange.bind(this, 'endpoint')} />
+        <form className="pure-form">
+          <div className="fieldset">
+            <div className="pure-control-group">
+              <label htmlFor="endpoint">GraphQL Endpoint</label>
+              <input type="text" className="pure-input-1-2" name="endpoint" value={currentTab.endpoint} onChange={this.handleChange.bind(this, 'endpoint')} placeholder="GraphQL Endpoint" />
+
+              <a href="javascript:;" className="pure-button pure-button-primary edit-headers-button" onClick={this.openHeaderEdit}>Edit HTTP Headers</a>
+
+              <div className="pure-control-group" style={{float: 'right'}}>
+                <label htmlFor="method">Method</label>
+
+                <select name="method" value={currentTab.method} onChange={this.handleChange.bind(this, 'method')}>
+                  <option value="get">GET</option>
+                  <option value="post">POST</option>
+                </select>
+              </div>
+            </div>
           </div>
-          <div className="field">
-            <label htmlFor="method">Method</label>
-            <select name="method" value={currentTab.method} onChange={this.handleChange.bind(this, 'method')}>
-              <option value="get">GET</option>
-              <option value="post">POST</option>
-            </select>
-          </div>
-          <div className="field headers">
-            <a href="javascript:;" onClick={this.openHeaderEdit}>Edit HTTP Headers</a>
-          </div>
-          <div className="field headers">
-            <a href="javascript:;" onClick={this.handleSaveSchema}>Save Schema</a>
-          </div>
-        </div>
+        </form>
         <div className="graphiql-wrapper">
           {
             // THIS IS THE GROSSEST THING I'VE EVER DONE AND I HATE IT. FIXME ASAP
@@ -346,7 +347,8 @@ const _storages = {};
 function _makeStorage(storageKey) {
   return {
     setItem: (key, val) => window.localStorage.setItem(`${storageKey}${key}`, val),
-    getItem: (key) => window.localStorage.getItem(`${storageKey}${key}`)
+    getItem: (key) => window.localStorage.getItem(`${storageKey}${key}`),
+    removeItem: (key) => window.localStorage.removeItem(`${storageKey}${key}`)
   };
 }
 

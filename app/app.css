@@ -1,11 +1,11 @@
 .clearfix:after {
-     visibility: hidden;
-     display: block;
-     font-size: 0;
-     content: " ";
-     clear: both;
-     height: 0;
-     }
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
+}
 .clearfix { display: inline-block; }
 /* start commented backslash hack \*/
 * html .clearfix { height: 1%; }
@@ -64,8 +64,6 @@ body {
 .tab-bar li {
   display: flex;
   list-style-type: none;
-  width: 150px;
-  flex-basis: 150px;
   flex-shrink: 0;
 }
 
@@ -111,48 +109,64 @@ body {
   flex: 1;
 }
 
-.config-form {
-  padding: 12px;
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
+/* Pure.css overrides */
+.pure-form {
+  margin: 1em 0.2em;
 }
 
-.field {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin: 0 12px;
+.pure-form label {
+  margin: .5em 0.5em .2em;
 }
 
-.endpoint-box {
-  flex: 1;
+/* Button customization */
+.button-success,
+.button-error,
+.button-warning,
+.button-secondary {
+  color: white;
+  border-radius: 2px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
 
-.endpoint-box input {
-  flex: 1;
-  width: 100%;
+.button-success {
+  background: rgb(28, 184, 65); /* this is a green */
 }
 
-.endpoint-box label {
-  text-align: center;
+.button-error {
+  background: rgb(202, 60, 60); /* this is a maroon */
 }
 
-@media (max-width: 700px) {
-  .endpoint-box {
-    width: 100%;
-    flex: initial;
-    margin-bottom: 15px;
-  }
+.button-warning {
+  background: rgb(223, 117, 20); /* this is an orange */
 }
 
-.field label {
-  margin-right: 20px;
+.button-secondary {
+  background: rgb(66, 184, 221); /* this is a light blue */
 }
 
-.field input, .field select {
-  height: 25px;
-  padding: 5px;
-  font-weight: bold;
-  font-size: 20px;
+.pure-table {
+  border-left: 0px;
+  border-right: 0px;
+  border-bottom: 0px;
+}
+
+.pure-table thead {
+  background-color: white;
+}
+
+.pure-table th {
+  border-top: 1px solid #eceeef;
+}
+
+.pure-table-horizontal tr {
+  border-top: 1px solid #eceeef;
+}
+
+.pure-table thead th {
+  border-bottom: 2px solid #eceeef;
+}
+
+.edit-headers-button {
+  margin-left: 1em;
+  float: right;
 }

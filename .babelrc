@@ -1,3 +1,17 @@
 {
-  "stage": 0
+  "presets": [
+    ["env", {
+      "targets": {
+        "electron": "0.36",
+        "uglify": true
+      }
+    }],
+    "stage-1",
+    "stage-2",
+    "stage-3",
+    "react"
+  ],
+  "plugins": [
+    "transform-runtime"
+  ]
 }
