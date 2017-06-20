@@ -62,6 +62,9 @@ export default class App extends React.Component {
       case 'PREVIOUS_TAB':
         this.gotoPreviousTab();
         break;
+      case 'SAVE_SCHEMA':
+        this.saveSchemaJson();
+        break;
       default:
         console.error("No idea how to handle '" + option + "'");
         break;
@@ -144,6 +147,25 @@ export default class App extends React.Component {
 
   getCurrentTab() {
     return this.state.tabs[this.state.currentTabIndex];
+  }
+
+  saveSchemaJson() {
+    return this.graphQLFetcher({
+      query: introspectionQuery
+    }).then((schema) => {
+      const dialog = window.require('electron').remote.require('electron').dialog;
+      return new Promise((resolve) => {
+        dialog.showSaveDialog({
+          title: 'Save schema',
+          defaultPath: 'schema.json'
+        }, (filename) => {
+          resolve({schema, filename});
+        })
+      });
+    }).then(({schema, filename}) => {
+      if (!filename) return;
+      fs.writeFileSync(filename, JSON.stringify(schema, null, 2), 'utf8');
+    });
   }
 
   updateLocalStorage() {
@@ -234,25 +256,6 @@ export default class App extends React.Component {
   openHeaderEdit = () => {
     this.setState({
       headerEditOpen: true
-    });
-  }
-
-  handleSaveSchema = () => {
-    return this.graphQLFetcher({
-      query: introspectionQuery
-    }).then((schema) => {
-      const dialog = window.require('electron').remote.require('electron').dialog;
-      return new Promise((resolve) => {
-        dialog.showSaveDialog({
-          title: 'Save schema',
-          defaultPath: 'schema.json'
-        }, (filename) => {
-          resolve({schema, filename});
-        })
-      });
-    }).then(({schema, filename}) => {
-      if (!filename) return;
-      fs.writeFileSync(filename, JSON.stringify(schema, null, 2), 'utf8');
     });
   }
 

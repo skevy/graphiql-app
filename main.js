@@ -89,6 +89,11 @@ app.on('ready', function() {
         click: function() {
           mainWindow.webContents.send('handleElectronMenuOption', 'CLOSE_TAB');
         }
+      }, {
+        label: 'Save Schema',
+        click: function() {
+          mainWindow.webContents.send('handleElectronMenuOption', 'SAVE_SCHEMA');
+        }
       }]
     }, {
       label: 'Edit',
