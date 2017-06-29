@@ -194,6 +194,12 @@ app.on('ready', function() {
         click: function() {
           mainWindow.webContents.send('handleElectronMenuOption', 'NEW_TAB');
         }
+      }, {
+        label: 'Close Query',
+        accelerator: 'Ctrl+W',
+        click: function() {
+          mainWindow.webContents.send('handleElectronMenuOption', 'CLOSE_TAB');
+        }
       }]
     }, {
       label: '&View',
