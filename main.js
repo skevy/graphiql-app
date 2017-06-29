@@ -79,13 +79,13 @@ app.on('ready', function() {
       label: 'File',
       submenu: [{
         label: 'New Query',
-        accelerator: 'Command+T',
+        accelerator: 'CmdOrCtrl+T',
         click: function() {
           mainWindow.webContents.send('handleElectronMenuOption', 'NEW_TAB');
         }
       }, {
         label: 'Close Query',
-        accelerator: 'Command+W',
+        accelerator: 'CmdOrCtrl+W',
         click: function() {
           mainWindow.webContents.send('handleElectronMenuOption', 'CLOSE_TAB');
         }
