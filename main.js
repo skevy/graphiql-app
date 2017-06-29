@@ -79,13 +79,13 @@ app.on('ready', function() {
       label: 'File',
       submenu: [{
         label: 'New Query',
-        accelerator: 'CmdOrCtrl+T',
+        accelerator: 'Command+T',
         click: function() {
           mainWindow.webContents.send('handleElectronMenuOption', 'NEW_TAB');
         }
       }, {
         label: 'Close Query',
-        accelerator: 'CmdOrCtrl+W',
+        accelerator: 'Command+W',
         click: function() {
           mainWindow.webContents.send('handleElectronMenuOption', 'CLOSE_TAB');
         }
@@ -193,6 +193,12 @@ app.on('ready', function() {
         accelerator: 'Ctrl+N',
         click: function() {
           mainWindow.webContents.send('handleElectronMenuOption', 'NEW_TAB');
+        }
+      }, {
+        label: 'Close Query',
+        accelerator: 'Ctrl+W',
+        click: function() {
+          mainWindow.webContents.send('handleElectronMenuOption', 'CLOSE_TAB');
         }
       }]
     }, {
