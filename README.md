@@ -16,3 +16,5 @@ brew cask install graphiql
 ```
 
 Alternately, download the binary from the [Releases](https://github.com/skevy/graphiql-app/releases) tab.
+
+Once installed with Homebrew, browse to your Mac's Applications folder and click on the GraphiQL.app icon to start it.
