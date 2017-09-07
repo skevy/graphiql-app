@@ -125,7 +125,12 @@ app.on('ready', function() {
         label: 'Reload',
         accelerator: 'Command+R',
         click: function() {
-          mainWindow.reload();
+          if (mainWindow.restart) {
+            mainWindow.restart();
+          }
+          else if (mainWindow.reload) {
+            mainWindow.reload();
+          }
         }
       }, {
         label: 'Toggle Full Screen',
@@ -207,7 +212,7 @@ app.on('ready', function() {
         label: '&Reload',
         accelerator: 'Ctrl+R',
         click: function() {
-          mainWindow.restart();
+          mainWindow.reload();
         }
       }, {
         label: 'Toggle &Full Screen',
