@@ -17,7 +17,7 @@ brew cask install graphiql
 
 Alternately, download the binary from the [Releases](https://github.com/skevy/graphiql-app/releases) tab.
 
-### GEtting started developing
+#### Getting started developing
 
 - Branch and/or clone the repo locally.
 - cd into it
