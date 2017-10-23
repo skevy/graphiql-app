@@ -156,6 +156,17 @@ export default class App extends React.Component {
 
     const { endpoint, method, headers } = this.getCurrentTab();
 
+    if (endpoint == "") {
+      return Promise.resolve({
+        "data" : null,
+        "errors": [
+          {
+            "message": "Provide a URL to a GraphQL endpoint to start making queries to it!"
+          }
+        ]
+      });
+    }
+
     if (method == "get") {
       var url = endpoint;
       if (typeof graphQLParams['variables'] === "undefined"){
