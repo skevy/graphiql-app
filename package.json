@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "graphiql": "^0.11.6",
-    "graphql": "^0.11.7",
+    "graphql": "^0.10.1",
     "isomorphic-fetch": "^2.1.1",
     "lodash": "^3.10.1",
     "mousetrap": "^1.5.3",
