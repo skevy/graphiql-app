@@ -7,6 +7,7 @@
   "scripts": {
     "dev-server": "webpack-dev-server --config webpack/webpack-dev-server.config.js --progress --colors --port 2992 --inline",
     "hot-dev-server": "webpack-dev-server --config webpack/webpack-hot-dev-server.config.js --hot --progress --colors --port 2992 --inline",
+    "build-dev": "webpack --config webpack/webpack.config.js --progress --profile --colors",
     "build": "webpack --config webpack/webpack.config.production.js --progress --profile --colors",
     "start": "electron .",
     "start-dev": "NODE_ENV=development electron .",
