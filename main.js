@@ -162,24 +162,29 @@ app.on('ready', function() {
     }, {
       label: 'Help',
       submenu: [{
-        label: 'Learn More',
+        label: 'Learn GraphQL',
         click: function() {
-          shell.openExternal('http://electron.atom.io');
+          shell.openExternal('http://graphql.org/learn/');
         }
       }, {
         label: 'Documentation',
         click: function() {
-          shell.openExternal('https://github.com/atom/electron/tree/master/docs#readme');
+          shell.openExternal('https://github.com/graphql/graphiql#graphiql');
         }
       }, {
-        label: 'Community Discussions',
+        label: 'Community Resources',
         click: function() {
-          shell.openExternal('https://discuss.atom.io/c/electron');
+          shell.openExternal('http://graphql.org/community/');
         }
       }, {
-        label: 'Search Issues',
+        label: 'Search GraphiQL Issues',
         click: function() {
-          shell.openExternal('https://github.com/atom/electron/issues');
+          shell.openExternal('https://github.com/graphql/graphiql/issues');
+        }
+      }, {
+        label: 'Search App Issues',
+        click: function() {
+          shell.openExternal('https://github.com/skevy/graphiql-app/issues');
         }
       }]
     }];
