@@ -7,6 +7,7 @@
   "scripts": {
     "dev-server": "webpack-dev-server --config webpack/webpack-dev-server.config.js --progress --colors --port 2992 --inline",
     "hot-dev-server": "webpack-dev-server --config webpack/webpack-hot-dev-server.config.js --hot --progress --colors --port 2992 --inline",
+    "build-dev": "webpack --config webpack/webpack.config.js --progress --profile --colors",
     "build": "webpack --config webpack/webpack.config.production.js --progress --profile --colors",
     "start": "electron .",
     "start-dev": "NODE_ENV=development electron .",
@@ -15,7 +16,7 @@
     "dist-clean": "rm -rf ./dist ./release",
     "dist": "build -mwl",
     "release": "yarn dist-clean && yarn build && build -mwl",
-    "test": "./node_modules/mocha/bin/mocha"
+    "test": "npm run build"
   },
   "author": "Adam Miskiewicz <adam.skevy@mac.com> (http://github.com/skevy)",
   "license": "MIT",
@@ -28,7 +29,7 @@
     "url": "http://github.com/skevy/graphiql-app.git"
   },
   "dependencies": {
-    "graphiql": "^0.10.2",
+    "graphiql": "^0.11.6",
     "graphql": "^0.10.1",
     "isomorphic-fetch": "^2.1.1",
     "lodash": "^3.10.1",
@@ -38,7 +39,8 @@
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-modal": "^2.0.2",
-    "uuid": "^3.1.0"
+    "uuid": "^3.1.0",
+    "prop-types": "^15.6.0"
   },
   "devDependencies": {
     "asar": "^0.13.0",

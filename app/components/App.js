@@ -154,7 +154,29 @@ export default class App extends React.Component {
       'Content-Type': 'application/json'
     };
 
+    const error = {
+                    "data" : null,
+                    "errors": [
+                      {
+                        "message": "I couldn't communicate with the GraphQL server at the provided URL. Is it correct?"
+                      }
+                    ]
+                  };
+
     const { endpoint, method, headers } = this.getCurrentTab();
+
+    if (endpoint == "") {
+      return Promise.resolve({
+        "data" : null,
+        "errors": [
+          {
+            "message": "Provide a URL to a GraphQL endpoint to start making queries to it!"
+          }
+        ]
+      });
+    }
+
+
 
     if (method == "get") {
       var url = endpoint;
@@ -169,14 +191,16 @@ export default class App extends React.Component {
         credentials: 'include',
         headers: Object.assign({}, defaultHeaders, headers),
         body: null
-      }).then(response => response.json());
+      }).then(response => response.json())
+        .catch(reason => error);
     }
     return fetch(endpoint, {
       method: method,
       credentials: 'include',
       headers: Object.assign({}, defaultHeaders, headers),
       body: JSON.stringify(graphQLParams)
-    }).then(response => response.json());
+    }).then(response => response.json())
+      .catch(reason => error);
   }
 
   handleChange(field, eOrKey, e) {
