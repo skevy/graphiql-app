@@ -1,24 +1,32 @@
 .clearfix:after {
-     visibility: hidden;
-     display: block;
-     font-size: 0;
-     content: " ";
-     clear: both;
-     height: 0;
-     }
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
+}
 .clearfix { display: inline-block; }
 /* start commented backslash hack \*/
 * html .clearfix { height: 1%; }
 .clearfix { display: block; }
 /* close commented backslash hack */
 
+html {
+  height: 100%;
+}
+body {
+  min-height: 100%;
+}
+
 body {
   font-family: helvetica, arial, sans-serif;
+  display: flex;
 }
 
 #react-root {
-  width: 100%;
-  height: 100%;
+  display: flex;
+  flex: 1;
 }
 
 .ReactModal__Overlay {
@@ -26,9 +34,8 @@ body {
 }
 
 .wrapper {
-  width: 100%;
-  height: 100%;
   display: flex;
+  flex: 1;
   flex-direction: column;
 }
 
@@ -41,8 +48,6 @@ body {
 .tab-bar {
   width: 100%;
   height: 46px;
-  overflow-y: visible;
-  overflow-x: scroll;
 }
 
 .tab-bar-inner {
@@ -59,8 +64,6 @@ body {
 .tab-bar li {
   display: flex;
   list-style-type: none;
-  width: 150px;
-  flex-basis: 150px;
   flex-shrink: 0;
 }
 
@@ -106,28 +109,64 @@ body {
   flex: 1;
 }
 
-.config-form {
-  padding: 20px;
+/* Pure.css overrides */
+.pure-form {
+  margin: 1em 0.2em;
 }
 
-.field {
-  display: flex;
-  height: 40px;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  float: left;
-  margin-right: 30px;
+.pure-form label {
+  margin: .5em 0.5em .2em;
 }
 
-.field label {
-  margin-right: 20px;
-  line-height: 35px;
+/* Button customization */
+.button-success,
+.button-error,
+.button-warning,
+.button-secondary {
+  color: white;
+  border-radius: 2px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
 
-.field input, .field select {
-  height: 25px;
-  padding: 5px;
-  font-weight: bold;
-  font-size: 20px;
+.button-success {
+  background: rgb(28, 184, 65); /* this is a green */
+}
+
+.button-error {
+  background: rgb(202, 60, 60); /* this is a maroon */
+}
+
+.button-warning {
+  background: rgb(223, 117, 20); /* this is an orange */
+}
+
+.button-secondary {
+  background: rgb(66, 184, 221); /* this is a light blue */
+}
+
+.pure-table {
+  border-left: 0px;
+  border-right: 0px;
+  border-bottom: 0px;
+}
+
+.pure-table thead {
+  background-color: white;
+}
+
+.pure-table th {
+  border-top: 1px solid #eceeef;
+}
+
+.pure-table-horizontal tr {
+  border-top: 1px solid #eceeef;
+}
+
+.pure-table thead th {
+  border-bottom: 2px solid #eceeef;
+}
+
+.edit-headers-button {
+  margin-left: 1em;
+  float: right;
 }

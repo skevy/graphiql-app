@@ -1,10 +1,26 @@
 GraphiQL.app
 ------------
 
-A light, Electron-based wrapper around GraphiQL.
+[![Build Status](https://travis-ci.org/skevy/graphiql-app.svg?branch=master)](https://travis-ci.org/skevy/graphiql-app)
 
-![Image of GraphiQL.app](https://s3.amazonaws.com/f.cl.ly/items/2C3P1y3e2L0E292k262i/Screen%20Recording%202015-09-05%20at%2004.18%20PM.gif)
+A light, Electron-based wrapper around GraphiQL.
 
 Provides a tabbed interface for editing and testing GraphQL queries/mutations with GraphiQL.
 
-Download the binary from the [Releases](https://github.com/skevy/graphiql-app/releases) tab.
+#### Installation
+
+If you have [Homebrew](http://brew.sh/) installed on OSX:
+
+```
+brew cask install graphiql
+```
+
+Alternately, download the binary from the [Releases](https://github.com/skevy/graphiql-app/releases) tab.
+
+#### Getting started developing
+
+- Branch and/or clone the repo locally.
+- cd into it
+- install all the require packages: `npm i`
+- build the project: `npm run build`
+- start the project: `npm start`
