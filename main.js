@@ -90,6 +90,14 @@ app.on('ready', function() {
         click: function() {
           mainWindow.webContents.send('handleElectronMenuOption', 'CLOSE_TAB');
         }
+      }, {
+        type: 'separator'
+      }, {
+        label: 'Export query (to clipboard)',
+        accelerator: 'Command+E',
+        click: function() {
+          mainWindow.webContents.send('handleElectronMenuOption', 'EXPORT_QUERY');
+        }
       }]
     }, {
       label: 'Edit',
@@ -205,6 +213,14 @@ app.on('ready', function() {
         accelerator: 'Ctrl+W',
         click: function() {
           mainWindow.webContents.send('handleElectronMenuOption', 'CLOSE_TAB');
+        }
+      }, {
+        type: 'separator'
+      }, {
+        label: 'Export query (to clipboard)',
+        accelerator: 'Ctrl+E',
+        click: function() {
+          mainWindow.webContents.send('handleElectronMenuOption', 'EXPORT_QUERY');
         }
       }]
     }, {

@@ -60,6 +60,9 @@ export default class App extends React.Component {
       case 'PREVIOUS_TAB':
         this.gotoPreviousTab();
         break;
+      case 'EXPORT_QUERY':
+        this.exportQuery();
+        break;
       default:
         console.error("No idea how to handle '" + option + "'");
         break;
@@ -138,6 +141,35 @@ export default class App extends React.Component {
     }, () => {
       this.updateLocalStorage();
     });
+  }
+
+  exportQuery() {
+    const queryText = this.graphiql.getQueryEditor().getValue();
+    const variablesText = this.graphiql.getVariableEditor().getValue();
+    const variables = variablesText ? JSON.parse(variablesText) : undefined;
+    const queryObj = {
+      query: queryText,
+      variables
+    };
+    this.copyToClipboard(JSON.stringify(queryObj, null, 2));
+  }
+
+  copyToClipboard(text) {
+    const span = document.createElement('span');
+    span.style.whiteSpace = 'pre';
+    span.textContent = text;
+    const selection = window.getSelection();
+    document.body.appendChild(span);
+  
+    const range = document.createRange();
+    selection.removeAllRanges();
+    range.selectNode(span);
+    selection.addRange(range);
+  
+    document.execCommand('copy');
+  
+    selection.removeAllRanges();
+    span.remove();
   }
 
   getCurrentTab() {
@@ -299,6 +331,7 @@ export default class App extends React.Component {
             // THIS IS THE GROSSEST THING I'VE EVER DONE AND I HATE IT. FIXME ASAP
           }
           <GraphiQL
+            ref={graphiql => this.graphiql = graphiql}
             key={currentTabIndex + currentTab.endpoint + JSON.stringify(currentTab.headers)}
             storage={getStorage(`graphiql:${currentTab.uuid}`)}
             fetcher={this.graphQLFetcher} />
