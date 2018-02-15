@@ -1,8 +1,8 @@
 {
   "name": "graphiql-app",
   "productName": "GraphiQL",
-  "version": "0.6.3",
-  "description": "A light, Electron-based wrapper around GraphiQL. WIP",
+  "version": "0.7.0",
+  "description": "A light, Electron-based wrapper around GraphiQL.",
   "main": "main.js",
   "scripts": {
     "dev-server": "webpack-dev-server --config webpack/webpack-dev-server.config.js --progress --colors --port 2992 --inline",
