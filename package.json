@@ -16,7 +16,8 @@
     "dist-clean": "rm -rf ./dist ./release",
     "dist": "build -mwl",
     "release": "yarn dist-clean && yarn build && build -mwl",
-    "test": "npm run build"
+    "test": "npm run build",
+    "postinstall": "electron-builder install-app-deps"
   },
   "author": "Adam Miskiewicz <adam.skevy@mac.com> (http://github.com/skevy)",
   "license": "MIT",
@@ -61,7 +62,6 @@
     "electron-builder": "^19.4.2",
     "electron-packager": "^8.7.1",
     "electron-prebuilt": "^1.2.0",
-    "electron-rebuild": "^1.5.11",
     "electron-release": "^2.2.0",
     "eslint-plugin-react": "^5.2.2",
     "extract-text-webpack-plugin": "^0.8.2",
