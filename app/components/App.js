@@ -3,9 +3,10 @@ import _ from 'lodash';
 import uuid from 'uuid';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import fetch from 'isomorphic-fetch';
 import GraphiQL from 'graphiql/dist';
 import Modal from 'react-modal/lib/index';
+import { request as httpRequest } from 'http';
+import { request as httpsRequest } from 'https';
 
 Modal.setAppElement(document.getElementById('react-root'));
 
@@ -160,14 +161,14 @@ export default class App extends React.Component {
     span.textContent = text;
     const selection = window.getSelection();
     document.body.appendChild(span);
-  
+
     const range = document.createRange();
     selection.removeAllRanges();
     range.selectNode(span);
     selection.addRange(range);
-  
+
     document.execCommand('copy');
-  
+
     selection.removeAllRanges();
     span.remove();
   }
@@ -183,7 +184,8 @@ export default class App extends React.Component {
 
   graphQLFetcher = (graphQLParams) => {
     const defaultHeaders = {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'User-Agent': 'graphiql-app'
     };
 
     const error = {
@@ -208,31 +210,55 @@ export default class App extends React.Component {
       });
     }
 
-
+    const requestHeaders = Object.assign({}, defaultHeaders, headers);
+    const url = new URL(endpoint);
 
     if (method == "get") {
-      var url = endpoint;
       if (typeof graphQLParams['variables'] === "undefined"){
         graphQLParams['variables'] = "{}";
       }
 
-      url += url.indexOf('?') == -1 ? "?" : "&";
+      const query = encodeURIComponent(graphQLParams['query']);
+      const variables = encodeURIComponent(JSON.stringify(graphQLParams['variables']));
 
-      return fetch(url + "query=" + encodeURIComponent(graphQLParams['query']) + "&variables=" + encodeURIComponent(JSON.stringify(graphQLParams['variables'])), {
-        method: method,
-        credentials: 'include',
-        headers: Object.assign({}, defaultHeaders, headers),
-        body: null
-      }).then(response => response.json())
-        .catch(reason => error);
+      url.search = `query=${query}&variables=${variables}`;
     }
-    return fetch(endpoint, {
-      method: method,
-      credentials: 'include',
-      headers: Object.assign({}, defaultHeaders, headers),
-      body: JSON.stringify(graphQLParams)
-    }).then(response => response.json())
-      .catch(reason => error);
+
+    const requestOptions = {
+      method,
+      protocol: url.protocol,
+      hostname: url.hostname,
+      port: url.port,
+      path: url.pathname + url.search,
+      headers: requestHeaders,
+    };
+
+    const request = url.protocol === 'https:' ? httpsRequest(requestOptions) : httpRequest(requestOptions);
+
+    return new Promise((resolve, reject) => {
+      request.on('response', response => {
+        const chunks = [];
+        response.on('data', data => {
+          chunks.push(Buffer.from(data));
+        });
+        response.on('end', end => {
+          const data = Buffer.concat(chunks).toString();
+          if (response.statusCode >= 400) {
+            reject(data);
+          } else {
+            resolve(JSON.parse(data));
+          }
+        });
+      });
+
+      request.on('error', reject);
+
+      if (method == "get") {
+        request.end();
+      } else {
+        request.end(JSON.stringify(graphQLParams));
+      }
+    })
   }
 
   handleChange(field, eOrKey, e) {
