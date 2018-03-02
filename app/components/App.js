@@ -5,7 +5,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import GraphiQL from 'graphiql/dist';
 import Modal from 'react-modal/lib/index';
-import { ClientRequest } from 'http';
+import { request as httpRequest } from 'http';
+import { request as httpsRequest } from 'https';
 
 Modal.setAppElement(document.getElementById('react-root'));
 
@@ -183,7 +184,8 @@ export default class App extends React.Component {
 
   graphQLFetcher = (graphQLParams) => {
     const defaultHeaders = {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'User-Agent': 'graphiql-app'
     };
 
     const error = {
@@ -222,17 +224,16 @@ export default class App extends React.Component {
       url.search = `query=${query}&variables=${variables}`;
     }
 
-    const request = new ClientRequest({
+    const requestOptions = {
       method,
       protocol: url.protocol,
       hostname: url.hostname,
       port: url.port,
       path: url.pathname + url.search,
-    });
+      headers: requestHeaders,
+    };
 
-    for (const header in requestHeaders) {
-      request.setHeader(header, requestHeaders[header]);
-    }
+    const request = url.protocol === 'https:' ? httpsRequest(requestOptions) : httpRequest(requestOptions);
 
     return new Promise((resolve, reject) => {
       request.on('response', response => {
@@ -241,9 +242,16 @@ export default class App extends React.Component {
           chunks.push(Buffer.from(data));
         });
         response.on('end', end => {
-          resolve(JSON.parse(Buffer.concat(chunks).toString()));
+          const data = Buffer.concat(chunks).toString();
+          if (response.statusCode >= 400) {
+            reject(data);
+          } else {
+            resolve(JSON.parse(data));
+          }
         });
       });
+
+      request.on('error', reject);
 
       if (method == "get") {
         request.end();
