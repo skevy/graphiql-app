@@ -231,6 +231,7 @@ export default class App extends React.Component {
       port: url.port,
       path: url.pathname + url.search,
       headers: requestHeaders,
+      rejectUnauthorized: false, // avoid problems with self-signed certs
     };
 
     const request = url.protocol === 'https:' ? httpsRequest(requestOptions) : httpRequest(requestOptions);
