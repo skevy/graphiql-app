@@ -18,7 +18,6 @@ Modal.setAppElement(document.getElementById('react-root'));
 
 import HTTPHeaderEditor from './HTTPHeaderEditor';
 
-
 export default class App extends React.Component {
   constructor() {
     super();
@@ -320,15 +319,13 @@ export default class App extends React.Component {
       // Fetch the schema using our introspection query and report once that has
       // finished.
       const { data } = await this.graphQLFetcher(tabUUID, { query: introspectionQuery })
-      console.log(tabUUID, "Updating schema: data fetched, building schema...");
 
       // Use the data we got back from GraphQL to build a client schema (a
       // schema without resolvers).
       schema = buildClientSchema(data)
-      console.log(tabUUID, "Updating schema: schema built, setting state...");
     } catch (e) {
-      console.log(tabUUID, "Updating schema: fetching failed, aborted", e);
-      return;
+      console.log(tabUUID, "Updating schema: fetching failed, clearing...", e);
+      schema = null;
     }
 
     // Update our tab with the new schema.
@@ -351,23 +348,29 @@ export default class App extends React.Component {
   _updateGraphiQLDocExplorerNavStack(nextSchema) {
     // If one type/field isn’t find this will be set to false and the
     // `navStack` will just reset itself.
-    let allOk = true
-    let nextNavStack = []
+    let allOk
+    let nextNavStack
+    // Get the documentation explorer component from GraphiQL. Unfortunately
+    // for them this looks like public API. Muwahahahaha.
+    const { docExplorerComponent } = this.graphiql
+    const { navStack } = docExplorerComponent.state
     if (!nextSchema) {
       // No schema - reset everything
       allOk = false;
     } else {
-      // Get the documentation explorer component from GraphiQL. Unfortunately
-      // for them this looks like public API. Muwahahahaha.
-      const { docExplorerComponent } = this.graphiql
-      const { navStack } = docExplorerComponent.state
+
+      allOk = true;
 
       // Ok, so if you look at GraphiQL source code, the `navStack` is made up of
       // objects that are either types or fields. Let’s use that to search in
       // our new schema for matching (updated) types and fields.
       nextNavStack = navStack.map((navStackItem, i) => {
         // If we are not ok, abort!
-        if (!allOk) return null
+        if (!allOk) return null;
+        if (!navStackItem) {
+          allOk = false;
+          return null;
+        }
 
         // Get the definition from the nav stack item.
         const typeOrField = navStackItem.def
@@ -432,7 +435,7 @@ export default class App extends React.Component {
     this.graphiql.docExplorerComponent.setState({
       // If we are not ok, just reset the `navStack` with an empty array.
       // Otherwise use our new stack.
-      navStack: allOk ? nextNavStack : [],
+      navStack: allOk ? nextNavStack : [navStack[0]],
     })
   }
 
@@ -626,7 +629,7 @@ export default class App extends React.Component {
             key={currentTab.uuid}
             storage={getStorage(`graphiql:${currentTab.uuid}`)}
             fetcher={this.fetcher}
-            schema={currentTab.schema} />
+            schema={currentTab.schema || null} />
         </div>
       </div>
     );
