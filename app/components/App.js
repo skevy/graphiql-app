@@ -368,29 +368,34 @@ export default class App extends React.Component {
 
     return (
       <div className="wrapper">
-        <div className="tab-bar">
-          <div className="tab-bar-inner">
-            {_.map(this.state.tabs, (tab, tabIndex) => {
-              return (
-                <li
-                  key={tabIndex}
-                  className={tabIndex === this.state.currentTabIndex ? 'active' : ''}>
-                  <a href="javascript:;"
-                    onClick={this.handleTabClick.bind(this, tabIndex)}
-                    onDoubleClick={this.handleTabDoubleClick.bind(this, tabIndex)}>
-                    { this.state.editingTab === tabIndex ?
-                      <input ref="editingTabNameInput"
-                        type="text"
-                        value={tab.name || ''}
-                        onKeyUp={this.handleEditTabKeyUp}
-                        onChange={this.handleChange.bind(this, 'name', tabIndex)} />
-                      : tab.name || `Untitled Query ${tabIndex + 1}` }
-                  </a>
-                </li>
-              );
-            })}
-          </div>
-        </div>
+        {
+          this.state.tabs.length > 1
+          ?
+            <div className="tab-bar">
+              <div className="tab-bar-inner">
+                {_.map(this.state.tabs, (tab, tabIndex) => {
+                  return (
+                    <li
+                      key={tabIndex}
+                      className={tabIndex === this.state.currentTabIndex ? 'active' : ''}>
+                      <a href="javascript:;"
+                        onClick={this.handleTabClick.bind(this, tabIndex)}
+                        onDoubleClick={this.handleTabDoubleClick.bind(this, tabIndex)}>
+                        { this.state.editingTab === tabIndex ?
+                          <input ref="editingTabNameInput"
+                            type="text"
+                            value={tab.name || ''}
+                            onKeyUp={this.handleEditTabKeyUp}
+                            onChange={this.handleChange.bind(this, 'name', tabIndex)} />
+                          : tab.name || `Untitled Query ${tabIndex + 1}` }
+                      </a>
+                    </li>
+                  );
+                })}
+              </div>
+            </div>
+          : null
+        }
         <div className="tabs">
           {tabEl}
         </div>
