@@ -24,3 +24,8 @@ Alternately, download the binary from the [Releases](https://github.com/skevy/gr
 - install all the require packages: `npm i`
 - build the project: `npm run build`
 - start the project: `npm start`
+
+To develop faster:
+
+- `npm run hot-dev-server`
+- `npm run start-hot`
