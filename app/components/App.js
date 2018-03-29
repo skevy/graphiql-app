@@ -109,7 +109,7 @@ export default class App extends React.Component {
     const oldHash = hash(currentTabPreviousState);
     const newHash = hash(currentTab);
     if (oldHash !== newHash) {
-      this.updateSchema(currentTab.uuid);
+      this.debouncedUpdateSchema(currentTab.uuid);
     } else if (currentTabPreviousState.streamUrl !== currentTab.streamUrl) {
       this.updateEventStream(currentTab.uuid);
     }
@@ -313,30 +313,37 @@ export default class App extends React.Component {
     }
   }
 
-  updateSchema(tabUUID) {
+  async updateSchema(tabUUID) {
+    console.log(tabUUID, "Updating schema: starting...");
+    let schema
+    try {
+      // Fetch the schema using our introspection query and report once that has
+      // finished.
+      const { data } = await this.graphQLFetcher(tabUUID, { query: introspectionQuery })
+      console.log(tabUUID, "Updating schema: data fetched, building schema...");
+
+      // Use the data we got back from GraphQL to build a client schema (a
+      // schema without resolvers).
+      schema = buildClientSchema(data)
+      console.log(tabUUID, "Updating schema: schema built, setting state...");
+    } catch (e) {
+      console.log(tabUUID, "Updating schema: fetching failed, aborted", e);
+      return;
+    }
+
+    // Update our tab with the new schema.
+    this.updateFieldForTabUuid(tabUUID, 'schema', schema);
+    console.log(tabUUID, "Updating schema: complete!");
+  }
+
+  debouncedUpdateSchema(tabUUID) {
     if (!this._debouncedUpdateSchema[tabUUID]) {
-      this._debouncedUpdateSchema[tabUUID] = _.debounce(async () => {
-        console.log(tabUUID, "Updating schema: starting...");
-        let schema
-        try {
-          // Fetch the schema using our introspection query and report once that has
-          // finished.
-          const { data } = await this.graphQLFetcher(tabUUID, { query: introspectionQuery })
-          console.log(tabUUID, "Updating schema: data fetched, building schema...");
-
-          // Use the data we got back from GraphQL to build a client schema (a
-          // schema without resolvers).
-          schema = buildClientSchema(data)
-          console.log(tabUUID, "Updating schema: schema built, setting state...");
-        } catch (e) {
-          console.log(tabUUID, "Updating schema: fetching failed, aborted", e);
-          return;
-        }
-
-        // Update our tab with the new schema.
-        this.updateFieldForTabUuid(tabUUID, 'schema', schema);
-        console.log(tabUUID, "Updating schema: complete!");
-      }, 500);
+      this._debouncedUpdateSchema[tabUUID] = _.debounce(() => {
+        this.updateSchema(tabUUID);
+      }, 500, {
+        leading: true,
+        trailing: true,
+      });
     }
     return this._debouncedUpdateSchema[tabUUID]();
   }
