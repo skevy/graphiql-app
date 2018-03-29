@@ -277,7 +277,7 @@ export default class App extends React.Component {
         }
 
         eventSource.addEventListener(
-          'changed',
+          'change',
           () => {
             this.updateSchema(tabUUID);
           },
