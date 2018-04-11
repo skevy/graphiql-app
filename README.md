@@ -36,3 +36,8 @@ Then simply execute the app. It will ask whether to add shortcuts to your deskto
 - install all the require packages: `npm i`
 - build the project: `npm run build`
 - start the project: `npm start`
+
+To develop faster:
+
+- `npm run hot-dev-server`
+- `npm run start-hot`

@@ -7,11 +7,16 @@ import GraphiQL from 'graphiql/dist';
 import Modal from 'react-modal/lib/index';
 import { request as httpRequest } from 'http';
 import { request as httpsRequest } from 'https';
+import {
+  buildClientSchema,
+  introspectionQuery,
+  isType,
+  GraphQLObjectType,
+} from 'graphql'
 
 Modal.setAppElement(document.getElementById('react-root'));
 
 import HTTPHeaderEditor from './HTTPHeaderEditor';
-
 
 export default class App extends React.Component {
   constructor() {
@@ -19,17 +24,38 @@ export default class App extends React.Component {
 
     const storage = window.localStorage;
 
-    this.state = {
-      headerEditOpen: false,
-      currentTabIndex: storage.getItem('currentTabIndex') ? parseInt(storage.getItem('currentTabIndex')) : 0,
-      tabs: storage.getItem('tabs') ? JSON.parse(storage.getItem('tabs')) : [
+    this._eventSource = {}
+    this._debouncedUpdateSchema = {};
+    let tabs;
+    try {
+      tabs = JSON.parse(storage.getItem('tabs')).map(t => {
+        return Object.assign({
+          uuid: uuid.v1(),
+        }, t);
+      });
+      if (tabs.length < 1) {
+        throw new Error("Fallback");
+      }
+    } catch (e) {
+      tabs = [
         {
+          uuid: uuid.v1(),
           name: null,
           headers: {},
           endpoint: '',
-          method: 'post'
+          method: 'post',
+          schema: null,
+          streamUrl: null,
         }
-      ]
+      ];
+    }
+
+    const currentTabIndex = storage.getItem('currentTabIndex') ? parseInt(storage.getItem('currentTabIndex'), 10) : 0;
+
+    this.state = {
+      headerEditOpen: false,
+      currentTabIndex: currentTabIndex < tabs.length ? currentTabIndex : 0,
+      tabs
     };
   }
 
@@ -44,6 +70,53 @@ export default class App extends React.Component {
       e.preventDefault();
       this.gotoPreviousTab();
       return false;
+    });
+
+    const currentTab = this.getCurrentTab();
+
+    this.state.tabs.forEach(t => {
+      this.updateSchema(t.uuid);
+    });
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    const oldTab = this.getCurrentTab();
+    const oldSchema = oldTab ? oldTab.schema : null;
+    const newTab = nextState.tabs[nextState.currentTabIndex];
+    const newSchema = newTab ? newTab.schema : null;
+    if (oldSchema !== newSchema) {
+      // Do some hacky stuff to GraphiQL.
+      console.log(newTab.uuid, "Schema changed, updating GraphiQL");
+      this._updateGraphiQLDocExplorerNavStack(newSchema)
+    }
+  }
+
+  componentDidUpdate(oldProps, oldState) {
+    const currentTab = this.getCurrentTab();
+    const hash = (tab) => {
+      if (!tab) {
+        return null;
+      }
+      const {headers, endpoint, method} = tab
+      return JSON.stringify({
+        headers,
+        endpoint,
+        method
+      })
+    }
+    const currentTabPreviousState = oldState.tabs.find(t => t.uuid === currentTab.uuid);
+    const oldHash = hash(currentTabPreviousState);
+    const newHash = hash(currentTab);
+    if (oldHash !== newHash) {
+      this.debouncedUpdateSchema(currentTab.uuid);
+    } else if (currentTabPreviousState.streamUrl !== currentTab.streamUrl) {
+      this.updateEventStream(currentTab.uuid);
+    }
+    const oldUUIDs = oldState.tabs.map(t => t.uuid).filter(_ => _);
+    const newUUIDs = this.state.tabs.map(t => t.uuid).filter(_ => _);
+    oldUUIDs.filter(uuid => newUUIDs.indexOf(oldUUIDs) === -1).forEach(uuid => {
+      // Clear the event streams of removed tabs
+      this.updateEventStream(uuid);
     });
   }
 
@@ -75,12 +148,9 @@ export default class App extends React.Component {
     const newTabIndex = this.state.tabs.length;
 
     this.setState({
-      tabs: [...this.state.tabs, {
+      tabs: [...this.state.tabs, Object.assign({}, currentTab, {
         uuid: uuid.v1(),
-        headers: currentTab.headers,
-        endpoint: currentTab.endpoint,
-        method: currentTab.method
-      }],
+      })],
       currentTabIndex: newTabIndex
     }, () => {
       this.updateLocalStorage();
@@ -177,12 +247,199 @@ export default class App extends React.Component {
     return this.state.tabs[this.state.currentTabIndex];
   }
 
+  getTab(uuid) {
+    return this.state.tabs.find(t => t.uuid === uuid);
+  }
+
   updateLocalStorage() {
-    window.localStorage.setItem('tabs', JSON.stringify(this.state.tabs));
+    window.localStorage.setItem('tabs', JSON.stringify(this.state.tabs.map(t => {
+      const { uuid, endpoint, method, headers, name } = t;
+      return { uuid, endpoint, method, headers, name };
+    })));
     window.localStorage.setItem('currentTabIndex', this.state.currentTabIndex);
   }
 
-  graphQLFetcher = (graphQLParams) => {
+  updateEventStream(tabUUID, backoff = 200) {
+    const tab = this.getTab(tabUUID);
+    if (this._eventSource[tabUUID]) {
+      console.log(tabUUID, 'GraphQL schema monitoring disabled'),
+      this._eventSource[tabUUID].close();
+      this._eventSource[tabUUID] = null;
+    }
+    if (tab && tab.streamUrl) {
+      try {
+        const endpointUrl = new URL(tab.endpoint);
+        const streamUrl = new URL(tab.streamUrl, endpointUrl);
+        const eventSource = new EventSource(streamUrl);
+        if (endpointUrl.host !== streamUrl.host) {
+          throw new Error(`Stream and endpoint hosts don't match - '${streamUrl.host}' !== '${endpointUrl.host}'`);
+        }
+
+        eventSource.addEventListener(
+          'change',
+          () => {
+            this.updateSchema(tabUUID);
+          },
+          false,
+        );
+
+        eventSource.addEventListener(
+          'open',
+          () => {
+            console.log(tabUUID, 'GraphQL schema monitoring enabled');
+            // Reset backoff
+            backoff = 200;
+          },
+          false,
+        );
+
+        eventSource.addEventListener(
+          'error',
+          () => {
+            console.log(tabUUID, 'GraphQL schema monitoring error');
+            setTimeout(() => {
+              this.updateEventStream(tabUUID, Math.min(backoff * 1.2, 30000));
+            }, backoff);
+          },
+          false,
+        );
+
+        // Store our event source so we can unsubscribe later.
+        this._eventSource[tabUUID] = eventSource
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }
+
+  async updateSchema(tabUUID) {
+    console.log(tabUUID, "Updating schema: starting...");
+    let schema
+    try {
+      // Fetch the schema using our introspection query and report once that has
+      // finished.
+      const { data } = await this.graphQLFetcher(tabUUID, { query: introspectionQuery })
+
+      // Use the data we got back from GraphQL to build a client schema (a
+      // schema without resolvers).
+      schema = buildClientSchema(data)
+    } catch (e) {
+      console.log(tabUUID, "Updating schema: fetching failed, clearing...", e);
+      schema = null;
+    }
+
+    // Update our tab with the new schema.
+    this.updateFieldForTabUuid(tabUUID, 'schema', schema);
+    console.log(tabUUID, "Updating schema: complete!");
+  }
+
+  debouncedUpdateSchema(tabUUID) {
+    if (!this._debouncedUpdateSchema[tabUUID]) {
+      this._debouncedUpdateSchema[tabUUID] = _.debounce(() => {
+        this.updateSchema(tabUUID);
+      }, 500, {
+        leading: true,
+        trailing: true,
+      });
+    }
+    return this._debouncedUpdateSchema[tabUUID]();
+  }
+
+  _updateGraphiQLDocExplorerNavStack(nextSchema) {
+    // If one type/field isn’t find this will be set to false and the
+    // `navStack` will just reset itself.
+    let allOk
+    let nextNavStack
+    // Get the documentation explorer component from GraphiQL. Unfortunately
+    // for them this looks like public API. Muwahahahaha.
+    const { docExplorerComponent } = this.graphiql
+    const { navStack } = docExplorerComponent.state
+    if (!nextSchema) {
+      // No schema - reset everything
+      allOk = false;
+    } else {
+
+      allOk = true;
+
+      // Ok, so if you look at GraphiQL source code, the `navStack` is made up of
+      // objects that are either types or fields. Let’s use that to search in
+      // our new schema for matching (updated) types and fields.
+      nextNavStack = navStack.map((navStackItem, i) => {
+        // If we are not ok, abort!
+        if (!allOk) return null;
+        if (!navStackItem) {
+          allOk = false;
+          return null;
+        }
+
+        // Get the definition from the nav stack item.
+        const typeOrField = navStackItem.def
+
+        // If there is no type or field then this is likely the root schema view,
+        // or a search. If this is the case then just return that nav stack item!
+        if (!typeOrField) {
+          return navStackItem
+        } else if (isType(typeOrField)) {
+          // If this is a type, let’s do some shenanigans...
+          // Let’s see if we can get a type with the same name.
+          const nextType = nextSchema.getType(typeOrField.name)
+
+          // If there is no type with this name (it was removed), we are not ok
+          // so set `allOk` to false and return undefined.
+          if (!nextType) {
+            allOk = false
+            return null
+          }
+
+          // If there is a type with the same name, let’s return it! This is the
+          // new type with all our new information.
+          return { ...navStackItem, def: nextType }
+        } else {
+          // If you thought this function was already pretty bad, it’s about to get
+          // worse. We want to update the information for an object field.
+          // Ok, so since this is an object field, we will assume that the last
+          // element in our stack was an object type.
+          const nextLastType = nextSchema.getType(
+            navStack[i - 1] ? navStack[i - 1].name : null,
+          )
+
+          // If there is no type for the last type in the nav stack’s name.
+          // Panic!
+          if (!nextLastType) {
+            allOk = false
+            return null
+          }
+
+          // If the last type is not an object type. Panic!
+          if (!(nextLastType instanceof GraphQLObjectType)) {
+            allOk = false
+            return null
+          }
+
+          // Next we will see if the new field exists in the last object type.
+          const nextField = nextLastType.getFields()[typeOrField.name]
+
+          // If not, Panic!
+          if (!nextField) {
+            allOk = false
+            return null
+          }
+
+          // Otherwise we hope very much that it is correct.
+          return { ...navStackItem, def: nextField }
+        }
+      })
+    }
+
+    // This is very hacky but works. React is cool.
+    this.graphiql.docExplorerComponent.setState({
+      // If we are not ok, just reset the `navStack` with an empty array.
+      // Otherwise use our new stack.
+      navStack: allOk ? nextNavStack : [navStack[0]],
+    })
+  }
+
+  graphQLFetcher = (tabUUID, graphQLParams) => {
     const defaultHeaders = {
       'Content-Type': 'application/json',
       'User-Agent': 'graphiql-app'
@@ -197,7 +454,7 @@ export default class App extends React.Component {
                     ]
                   };
 
-    const { endpoint, method, headers } = this.getCurrentTab();
+    const { endpoint, method, headers } = this.getTab(tabUUID);
 
     if (endpoint == "") {
       return Promise.resolve({
@@ -215,7 +472,7 @@ export default class App extends React.Component {
 
     if (method == "get") {
       if (typeof graphQLParams['variables'] === "undefined"){
-        graphQLParams['variables'] = "{}";
+        graphQLParams['variables'] = {};
       }
 
       const query = encodeURIComponent(graphQLParams['query']);
@@ -238,6 +495,7 @@ export default class App extends React.Component {
 
     return new Promise((resolve, reject) => {
       request.on('response', response => {
+        this.updateFieldForTabUuid(tabUUID, 'streamUrl', response.headers['x-graphql-event-stream']);
         const chunks = [];
         response.on('data', data => {
           chunks.push(Buffer.from(data));
@@ -260,6 +518,10 @@ export default class App extends React.Component {
         request.end(JSON.stringify(graphQLParams));
       }
     })
+  }
+
+  fetcher = graphQLParams => {
+    return this.graphQLFetcher(this.getCurrentTab().uuid, graphQLParams);
   }
 
   handleChange(field, eOrKey, e) {
@@ -285,6 +547,14 @@ export default class App extends React.Component {
     }, () => {
       this.updateLocalStorage();
     });
+  }
+
+  updateFieldForTabUuid(tabUUID, field, value) {
+    const { tabs } = this.state;
+    const tabIndex = tabs.findIndex(t => t.uuid === tabUUID);
+    if (tabIndex !== -1) {
+      this.updateFieldForTab(tabIndex, field, value);
+    }
   }
 
   handleTabClick = (tabIndex) => {
@@ -354,43 +624,46 @@ export default class App extends React.Component {
           </div>
         </form>
         <div className="graphiql-wrapper">
-          {
-            // THIS IS THE GROSSEST THING I'VE EVER DONE AND I HATE IT. FIXME ASAP
-          }
           <GraphiQL
             ref={graphiql => this.graphiql = graphiql}
-            key={currentTabIndex + currentTab.endpoint + JSON.stringify(currentTab.headers)}
+            key={currentTab.uuid}
             storage={getStorage(`graphiql:${currentTab.uuid}`)}
-            fetcher={this.graphQLFetcher} />
+            fetcher={this.fetcher}
+            schema={currentTab.schema || null} />
         </div>
       </div>
     );
 
     return (
       <div className="wrapper">
-        <div className="tab-bar">
-          <div className="tab-bar-inner">
-            {_.map(this.state.tabs, (tab, tabIndex) => {
-              return (
-                <li
-                  key={tabIndex}
-                  className={tabIndex === this.state.currentTabIndex ? 'active' : ''}>
-                  <a href="javascript:;"
-                    onClick={this.handleTabClick.bind(this, tabIndex)}
-                    onDoubleClick={this.handleTabDoubleClick.bind(this, tabIndex)}>
-                    { this.state.editingTab === tabIndex ?
-                      <input ref="editingTabNameInput"
-                        type="text"
-                        value={tab.name || ''}
-                        onKeyUp={this.handleEditTabKeyUp}
-                        onChange={this.handleChange.bind(this, 'name', tabIndex)} />
-                      : tab.name || `Untitled Query ${tabIndex + 1}` }
-                  </a>
-                </li>
-              );
-            })}
-          </div>
-        </div>
+        {
+          this.state.tabs.length > 1
+          ?
+            <div className="tab-bar">
+              <div className="tab-bar-inner">
+                {_.map(this.state.tabs, (tab, tabIndex) => {
+                  return (
+                    <li
+                      key={tabIndex}
+                      className={tabIndex === this.state.currentTabIndex ? 'active' : ''}>
+                      <a href="javascript:;"
+                        onClick={this.handleTabClick.bind(this, tabIndex)}
+                        onDoubleClick={this.handleTabDoubleClick.bind(this, tabIndex)}>
+                        { this.state.editingTab === tabIndex ?
+                          <input ref="editingTabNameInput"
+                            type="text"
+                            value={tab.name || ''}
+                            onKeyUp={this.handleEditTabKeyUp}
+                            onChange={this.handleChange.bind(this, 'name', tabIndex)} />
+                          : tab.name || `Untitled Query ${tabIndex + 1}` }
+                      </a>
+                    </li>
+                  );
+                })}
+              </div>
+            </div>
+          : null
+        }
         <div className="tabs">
           {tabEl}
         </div>
