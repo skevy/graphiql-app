@@ -36,7 +36,9 @@ export default class ClientCertificateEditor extends React.Component {
               <UploadButton value={this.state.key} placeholder='Key' onChange={(filePath) => this.setState({ key: filePath })} />
             </div>
             <br />
-            <button style={{ width: '100%' }} className="pure-button pure-button-primary" type='button' onClick={this.handleOk}>Ok</button>
+            <button style={{ width: '100%' }} className="pure-button pure-button-primary" type='button' onClick={this.handleOk}>
+              Save
+            </button>
           </fieldset>
         </form>
       </div>
