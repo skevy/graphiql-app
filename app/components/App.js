@@ -245,8 +245,6 @@ export default class App extends React.Component {
       rejectUnauthorized: false, // avoid problems with self-signed certs
     };
 
-    console.log('OPTS', requestOptions)
-
     const request = url.protocol === 'https:' ? httpsRequest(requestOptions) : httpRequest(requestOptions);
 
     return new Promise((resolve, reject) => {
@@ -349,7 +347,6 @@ export default class App extends React.Component {
   }
 
   getClientCertificateFromModal = (clientCertificateOpts) => {
-    console.log(clientCertificateOpts)
     this.updateFieldForTab(this.state.currentTabIndex, 'clientCertificate', clientCertificateOpts);
     this.setState({ clientCertificateEditIsOpen: false })
   }
