@@ -5,12 +5,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import GraphiQL from 'graphiql/dist';
 import Modal from 'react-modal/lib/index';
+import fs from 'fs';
 import { request as httpRequest } from 'http';
-import { request as httpsRequest } from 'https';
+import { request as httpsRequest, Agent, globalAgent } from 'https';
 
 Modal.setAppElement(document.getElementById('react-root'));
 
 import HTTPHeaderEditor from './HTTPHeaderEditor';
+import ClientCertificateEditor from './ClientCertificateEditor'
 
 
 export default class App extends React.Component {
@@ -21,11 +23,13 @@ export default class App extends React.Component {
 
     this.state = {
       headerEditOpen: false,
+      clientCertificateEditIsOpen: false,
       currentTabIndex: storage.getItem('currentTabIndex') ? parseInt(storage.getItem('currentTabIndex')) : 0,
       tabs: storage.getItem('tabs') ? JSON.parse(storage.getItem('tabs')) : [
         {
           name: null,
           headers: {},
+          clientCertificate: null,
           endpoint: '',
           method: 'post'
         }
@@ -189,19 +193,19 @@ export default class App extends React.Component {
     };
 
     const error = {
-                    "data" : null,
-                    "errors": [
-                      {
-                        "message": "I couldn't communicate with the GraphQL server at the provided URL. Is it correct?"
-                      }
-                    ]
-                  };
+      "data": null,
+      "errors": [
+        {
+          "message": "I couldn't communicate with the GraphQL server at the provided URL. Is it correct?"
+        }
+      ]
+    };
 
-    const { endpoint, method, headers } = this.getCurrentTab();
+    const { endpoint, method, headers, clientCertificate } = this.getCurrentTab();
 
     if (endpoint == "") {
       return Promise.resolve({
-        "data" : null,
+        "data": null,
         "errors": [
           {
             "message": "Provide a URL to a GraphQL endpoint to start making queries to it!"
@@ -211,10 +215,16 @@ export default class App extends React.Component {
     }
 
     const requestHeaders = Object.assign({}, defaultHeaders, headers);
+
+    const agent = clientCertificate ? new Agent({
+      key: fs.readFileSync(clientCertificate.key),
+      cert: fs.readFileSync(clientCertificate.cert),
+    }) : globalAgent
+
     const url = new URL(endpoint);
 
     if (method == "get") {
-      if (typeof graphQLParams['variables'] === "undefined"){
+      if (typeof graphQLParams['variables'] === "undefined") {
         graphQLParams['variables'] = "{}";
       }
 
@@ -231,8 +241,11 @@ export default class App extends React.Component {
       port: url.port,
       path: url.pathname + url.search,
       headers: requestHeaders,
+      ...(url.protocol === 'https:' ? { agent } : {}),
       rejectUnauthorized: false, // avoid problems with self-signed certs
     };
+
+    console.log('OPTS', requestOptions)
 
     const request = url.protocol === 'https:' ? httpsRequest(requestOptions) : httpRequest(requestOptions);
 
@@ -305,7 +318,7 @@ export default class App extends React.Component {
   }
 
   handleEditTabKeyUp = (e) => {
-    if(e.keyCode === 13) {
+    if (e.keyCode === 13) {
       this.setState({
         editingTab: null
       });
@@ -318,14 +331,27 @@ export default class App extends React.Component {
     });
   }
 
+  openClientCertificateEdit = () => {
+    this.setState({
+      clientCertificateEditIsOpen: true,
+    })
+  }
+
   closeModal = () => {
     this.setState({
-      headerEditOpen: false
+      headerEditOpen: false,
+      clientCertificateEditIsOpen: false
     });
   }
 
   getHeadersFromModal = (headers) => {
     this.updateFieldForTab(this.state.currentTabIndex, 'headers', headers);
+  }
+
+  getClientCertificateFromModal = (clientCertificateOpts) => {
+    console.log(clientCertificateOpts)
+    this.updateFieldForTab(this.state.currentTabIndex, 'clientCertificate', clientCertificateOpts);
+    this.setState({ clientCertificateEditIsOpen: false })
   }
 
   render() {
@@ -341,8 +367,9 @@ export default class App extends React.Component {
               <input type="text" className="pure-input-1-2" name="endpoint" value={currentTab.endpoint} onChange={this.handleChange.bind(this, 'endpoint')} placeholder="GraphQL Endpoint" />
 
               <a href="javascript:;" className="pure-button pure-button-primary edit-headers-button" onClick={this.openHeaderEdit}>Edit HTTP Headers</a>
+              <a href="javascript:;" className="pure-button pure-button-primary edit-headers-button" onClick={this.openClientCertificateEdit}>Client Certificate</a>
 
-              <div className="pure-control-group" style={{float: 'right'}}>
+              <div className="pure-control-group" style={{ float: 'right' }}>
                 <label htmlFor="method">Method</label>
 
                 <select name="method" value={currentTab.method} onChange={this.handleChange.bind(this, 'method')}>
@@ -378,13 +405,13 @@ export default class App extends React.Component {
                   <a href="javascript:;"
                     onClick={this.handleTabClick.bind(this, tabIndex)}
                     onDoubleClick={this.handleTabDoubleClick.bind(this, tabIndex)}>
-                    { this.state.editingTab === tabIndex ?
+                    {this.state.editingTab === tabIndex ?
                       <input ref="editingTabNameInput"
                         type="text"
                         value={tab.name || ''}
                         onKeyUp={this.handleEditTabKeyUp}
                         onChange={this.handleChange.bind(this, 'name', tabIndex)} />
-                      : tab.name || `Untitled Query ${tabIndex + 1}` }
+                      : tab.name || `Untitled Query ${tabIndex + 1}`}
                   </a>
                 </li>
               );
@@ -397,8 +424,12 @@ export default class App extends React.Component {
         <Modal isOpen={this.state.headerEditOpen} onRequestClose={this.closeModal}>
           <HTTPHeaderEditor
             headers={_.map(this.state.tabs[this.state.currentTabIndex].headers, (value, key) => ({ key, value }))}
-            onCreateHeaders={this.getHeadersFromModal}
-            closeModal={this.closeModal} />
+            onCreateHeaders={this.getHeadersFromModal} />
+        </Modal>
+        <Modal isOpen={this.state.clientCertificateEditIsOpen} onRequestClose={this.closeModal}>
+          <ClientCertificateEditor
+            creds={this.state.tabs[this.state.currentTabIndex].clientCertificate}
+            onSelectCreds={this.getClientCertificateFromModal} />
         </Modal>
       </div>
     );
