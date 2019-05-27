@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  version="1.1"
+  baseProfile="full"
+  width="1024px"
+  height="1024px"
+  viewBox="0 0 1024 1024"
+  preserveAspectRatio="xMidYMid meet"
+  id="svg_document"
+  style="zoom: 0.5;"
+  visibility="visible">
+  <title id="svg_document_title" visibility="hidden">graphiql-app.svg</title>
+  <defs id="svg_document_defs" visibility="visible"></defs>
+  <g id="main_group" visibility="visible">
+    <polygon points="511,152 194,331 194,696 511,883 828,696 828,330 511,152" stroke="#e535ab" id="polygon-hexagon" stroke-width="36px" fill="white" transform="" visibility="visible"></polygon>
+    <g id="circle_group" visibility="visible">
+      <ellipse stroke="#000000" transform="" stroke-width="0" id="ellipse-top" cy="152px" visibility="visible" fill="#e535ab" rx="78px" cx="511px" ry="78px"></ellipse>
+      <ellipse stroke="#000000" cx="192px" ry="78px" id="ellipse-top-left" stroke-width="0" cy="330px" fill="#e535ab" rx="78px" transform="" visibility="visible"></ellipse>
+      <ellipse stroke="#000000" transform="" visibility="visible" id="ellipse-bottom-left" cy="696px" stroke-width="0" fill="#e535ab" rx="78px" cx="194px" ry="78px"></ellipse>
+      <ellipse stroke="#000000" cx="511px" ry="78px" stroke-width="0" id="ellipse-bottom" cy="883px" fill="#e535ab" rx="78px" transform="" visibility="visible"></ellipse>
+      <ellipse stroke="#000000" transform="" stroke-width="0" id="ellipse-bottom-right" cy="696px" visibility="visible" fill="#e535ab" rx="78px" cx="828px" ry="78px"></ellipse>
+      <ellipse stroke="#000000" transform="" visibility="visible" stroke-width="0" id="ellipse-top-right" cy="330px" fill="#e535ab" rx="78px" cx="828px" ry="78px"></ellipse>
+    </g>
+    <polygon points="511,152 194,696 828,696 511,152" stroke="#e535ab" id="polygon-triangle" stroke-width="40px" fill="none" transform="" visibility="visible"></polygon>
+  </g>
+</svg>
