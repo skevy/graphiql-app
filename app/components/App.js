@@ -4,6 +4,8 @@ import uuid from 'uuid';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import GraphiQL from 'graphiql/dist';
+import GraphiQLExplorer from "graphiql-explorer";
+import GraphiQLEditor from "./GraphiQLEditor.js";
 import Modal from 'react-modal/lib/index';
 import { request as httpRequest } from 'http';
 import { request as httpsRequest } from 'https';
@@ -357,7 +359,7 @@ export default class App extends React.Component {
           {
             // THIS IS THE GROSSEST THING I'VE EVER DONE AND I HATE IT. FIXME ASAP
           }
-          <GraphiQL
+          <GraphiQLEditor
             ref={graphiql => this.graphiql = graphiql}
             key={currentTabIndex + currentTab.endpoint + JSON.stringify(currentTab.headers)}
             storage={getStorage(`graphiql:${currentTab.uuid}`)}
