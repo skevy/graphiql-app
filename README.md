@@ -12,7 +12,7 @@ Provides a tabbed interface for editing and testing GraphQL queries/mutations wi
 If you have [Homebrew](http://brew.sh/) installed on macOS:
 
 ```
-brew cask install graphiql
+brew install --cask graphiql
 ```
 
 Alternately, download the binary from the [Releases](https://github.com/skevy/graphiql-app/releases) tab.
