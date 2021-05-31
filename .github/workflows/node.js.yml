@@ -1,0 +1,37 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Release
+
+on:
+  push:
+    tags: 'v*'
+
+jobs:
+  release:
+    permissions:
+      contents:  write
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+       os: [macos-latest, ubuntu-latest, windows-latest]
+      
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Install Node.js, NPM and Yarn
+      uses: actions/setup-node@v1
+      with:
+        node-version: 14
+    - name: Install deps
+      if: ${{ matrix.os == 'ubuntu-latest' }}
+      run: sudo apt-get install --no-install-recommends -y libarchive-tools
+    - name: Electron Builder Action
+  # You may pin to the exact commit or the version.
+  # uses: samuelmeuli/action-electron-builder@92327c67bc45ff7c38bf55d8aa8c4d75b7ea38e7
+      uses: samuelmeuli/action-electron-builder@v1.6.0
+      with:
+      # GitHub authentication token
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        release: ${{ startsWith(github.ref, 'refs/tags/v') }}
