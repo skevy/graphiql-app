@@ -6,6 +6,10 @@ var crashReporter = electron.crashReporter;
 const shell = electron.shell;
 var menu, template;
 
+try {
+	require('electron-reloader')(module);
+} catch {}
+
 crashReporter.start({
   productName: 'GraphiQL',
   companyName: 'n/a',
@@ -22,7 +26,7 @@ app.on('window-all-closed', function() {
 
 app.on('ready', function() {
 
-  mainWindow = new BrowserWindow({ width: 1024, height: 728 });
+  mainWindow = new BrowserWindow({ width: 1024, height: 728, webPreferences: { nodeIntegration: true, contextIsolation: false } });
 
   electron.session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
     details.requestHeaders['Origin'] = 'electron://graphiql-app';
