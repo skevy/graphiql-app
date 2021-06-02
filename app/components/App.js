@@ -1,6 +1,6 @@
 /*global Mousetrap*/
 import _ from 'lodash';
-import uuid from 'uuid';
+import { v4 } from 'uuid';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import GraphiQL from 'graphiql/dist';
@@ -76,7 +76,7 @@ export default class App extends React.Component {
 
     this.setState({
       tabs: [...this.state.tabs, {
-        uuid: uuid.v1(),
+        uuid: v4(),
         headers: currentTab.headers,
         endpoint: currentTab.endpoint,
         method: currentTab.method
@@ -104,7 +104,7 @@ export default class App extends React.Component {
       newTabs = [
         {
           name: null,
-          uuid: uuid.v1(),
+          uuid: v4(),
           headers: {},
           endpoint: '',
           method: 'post'

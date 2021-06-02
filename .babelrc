@@ -1,17 +1,13 @@
 {
+  "plugins": ["@babel/syntax-dynamic-import"],
   "presets": [
-    ["env", {
-      "targets": {
-        "electron": "0.36",
-        "uglify": true
+    [
+      "@babel/preset-env",
+      {
+        "modules": false
       }
-    }],
-    "stage-1",
-    "stage-2",
-    "stage-3",
-    "react"
-  ],
-  "plugins": [
-    "transform-runtime"
+    ],
+    "@babel/preset-react",
+    "@babel/preset-flow"
   ]
 }
