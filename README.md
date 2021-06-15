@@ -29,6 +29,9 @@ chmod +x graphiql-app-0.7.2-x86_64.AppImage
 
 Then simply execute the app. It will ask whether to add shortcuts to your desktop and menus for easy access in the future.
 
+### Windows installation
+To install GraphiQL App on Windows go to [Electron](https://www.electronjs.org/apps/graphiql), where you can find a windows installer. Once downloaded, execute the installer and let the installation wizard guide you through the installation.
+
 #### Getting started developing
 
 - Branch and/or clone the repo locally.
