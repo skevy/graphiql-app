@@ -13,7 +13,7 @@
     "start-dev": "NODE_ENV=development electron .",
     "start-hot": "HOT=1 NODE_ENV=development electron .",
     "package": "build --dir",
-    "dist-clean": "rm -rf ./dist ./release",
+    "dist-clean": "rm -r ./dist ./release",
     "dist": "build -mwl",
     "release": "yarn dist-clean && yarn build && build -mwl",
     "test": "npm run build",
